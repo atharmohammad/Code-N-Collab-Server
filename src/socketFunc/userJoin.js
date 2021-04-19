@@ -1,6 +1,6 @@
 const axios = require("axios");
 const KEY = require("../../config");
-const { addUser, removeUser } = require("../utils/Users");
+const { addUser, removeUser, getUser } = require("../utils/Users");
 
 module.exports = function (io) {
   console.log("started");
@@ -22,22 +22,22 @@ module.exports = function (io) {
 
       //To get data for newly connected client from the room
       const socketsInstances = async () => {
-        try{
+        try {
           const clients = await io.in(user.room).fetchSockets();
-      
+
           //counts how many users are active in room
           let res = "";
           if (clients.length > 1) {
             //make functions for getting data
             let askedCnt = 0;
-      
+
             for (const client of clients) {
               if (askedCnt == 5) break;
-              if(client.id === socket.id) continue;
+              if (client.id === socket.id) continue;
               askedCnt++;
               io.to(client.id).emit("sendInitialIO", { id: socket.id });
             }
-      
+
             //only if there are other clients than only we get data because otherwise models has not been created
             res = await axios.get(
               "http://localhost:8000/api/rest/domains/convergence/default/models/" +
@@ -51,20 +51,27 @@ module.exports = function (io) {
             console.log(res.data.body.data.text);
             io.to(socket.id).emit("initialCode", res.data.body.data.text);
           }
-        }
-        catch(e){
+        } catch (e) {
           //console.log('hippi ',e)
         }
       };
-      
-      socketsInstances();      
+
+      socketsInstances();
       return callback({ user });
     });
 
     socket.on("takeInitialIO", ({ id, inputText, outputText }) => {
-      console.log('takeInitialIO',inputText, outputText)
-      console.log('done')
+      console.log("takeInitialIO", inputText, outputText);
+      console.log("done");
       io.to(id).emit("initialIO", { inputText, outputText });
+    });
+
+    socket.on("changeIO", ({ inputText, outputText }) => {
+      const user = getUser(socket.id);
+      console.log("changeIO", user);
+      socket.broadcast
+        .to(user.room)
+        .emit("initialIO", { inputText, outputText });
     });
 
     socket.on("disconnect", () => {
