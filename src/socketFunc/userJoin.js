@@ -1,73 +1,107 @@
-const axios = require('axios');
-const KEY = require('../../config')
+const axios = require("axios");
+const KEY = require("../../config");
+const { addUser, removeUser } = require("../utils/Users");
 
-module.exports = function(io){    
-    io.on("connection", (socket) => {
-        let Data = null;
-    
-        console.log("New client connected");
-        socket.on("join", (data) => {
-        Data = data;
-        socket.join(data.room);
-        console.log(data.room, data.user);
-        //To get data for newly connected client from the room
-        try {
-            const socketsInstances = async () => {
-            const clients = await io.in(Data.room).fetchSockets();
-            //counts how many users are active in room
-            let res = "";
-            if (clients.length > 1) {
-                //only if there are other clients than only we get data because otherwise models has not been created
-                res = await axios.get(
-                "http://localhost:8000/api/rest/domains/convergence/default/models/" +
-                    data.room,
-                {
-                    headers: {
-                    Authorization: KEY,
-                    },
-                }
-                );
-    
-                console.log(res.data.body.data.text);
-                io.to(socket.id).emit("initialCode", res.data.body.data.text);
+module.exports = function (io) {
+  console.log("started");
+
+  io.on("connection", (socket) => {
+    socket.on("join", ({ username, room }, callback) => {
+      const { error, user } = addUser({ id: socket.id, username, room });
+
+      if (error) {
+        console.log("ops");
+        return callback({ error });
+      }
+      try {
+        socket.join(user.room);
+        console.log("A new use joined", user.room, user.username, user.id);
+      } catch (e) {
+        console.log("cant join");
+      }
+
+      //To get data for newly connected client from the room
+      const socketsInstances = async () => {
+        try{
+          const clients = await io.in(user.room).fetchSockets();
+      
+          //counts how many users are active in room
+          let res = "";
+          if (clients.length > 1) {
+            //make functions for getting data
+            let askedCnt = 0;
+      
+            for (const client of clients) {
+              if (askedCnt == 5) break;
+              if(client.id === socket.id) continue;
+              askedCnt++;
+              io.to(client.id).emit("sendInitialIO", { id: socket.id });
             }
-            };
-    
-            socketsInstances();
-        } catch (e) {
-            console.log(e);
+      
+            //only if there are other clients than only we get data because otherwise models has not been created
+            res = await axios.get(
+              "http://localhost:8000/api/rest/domains/convergence/default/models/" +
+                user.room,
+              {
+                headers: {
+                  Authorization: KEY,
+                },
+              }
+            );
+            console.log(res.data.body.data.text);
+            io.to(socket.id).emit("initialCode", res.data.body.data.text);
+          }
         }
-        });
-    
-        socket.on("disconnect", () => {
-        //Deleting the model when everyone leaves the room
+        catch(e){
+          //console.log('hippi ',e)
+        }
+      };
+      
+      socketsInstances();      
+      return callback({ user });
+    });
+
+    socket.on("takeInitialIO", ({ id, inputText, outputText }) => {
+      console.log('takeInitialIO',inputText, outputText)
+      console.log('done')
+      io.to(id).emit("initialIO", { inputText, outputText });
+    });
+
+    socket.on("disconnect", () => {
+      //Deleting the model when everyone leaves the room
+      const user = removeUser(socket.id);
+      console.log("disconnecting", socket.id, user);
+      if (user) {
         try {
-            const socketsInstances = async () => {
-            const clients = await io.in(Data.room).fetchSockets();
-            const users = clients.length;
-            if (users == 0) {
-                axios
+          const socketsInstances = async () => {
+            const clients = await io.in(user.room).fetchSockets();
+
+            if (clients.length == 0) {
+              axios
                 .delete(
-                    "http://localhost:8000/api/rest/domains/convergence/default/models/" +
-                    Data.room,
-                    {
+                  "http://localhost:8000/api/rest/domains/convergence/default/models/" +
+                    user.room,
+                  {
                     headers: {
-                        Authorization: KEY,
+                      Authorization: KEY,
                     },
-                    }
+                  }
                 )
                 .then((res) => {
-                    console.log("Deleted");
+                  console.log("Deleted");
                 })
-                .catch((e) => console.log(e));
+                .catch((e) => {
+                  //console.log(e)
+                });
             }
-            socket.leave(Data.room);
+            socket.leave(user.room);
             console.log("Disconnected");
-            };
-            socketsInstances();
+          };
+          socketsInstances();
         } catch (e) {
-            console.log(e);
+          console.log(e);
         }
-        });
+      }
     });
-}
+  });
+};

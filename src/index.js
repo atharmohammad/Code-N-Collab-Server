@@ -16,4 +16,5 @@ const io = socketIo(server, {
 
 require('./SocketFunc/userJoin')(io)
 
+
 server.listen(port, () => console.log(`Listening on port ${port}`));
