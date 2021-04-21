@@ -3,6 +3,7 @@ const http = require("http");
 const socketIo = require("socket.io");
 const axios = require("axios");
 const port = process.env.PORT || 8080;
+require('./db/mongoose');
 //const KEY = require("../config");
 const app = express();
 

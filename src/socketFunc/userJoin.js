@@ -1,5 +1,5 @@
 const axios = require("axios");
-const KEY = require("../../config");
+const KEY = require("../../Configs/config");
 const { addUser, removeUser, getUser } = require("../utils/Users");
 
 module.exports = function (io) {
@@ -15,7 +15,7 @@ module.exports = function (io) {
       }
       try {
         socket.join(user.room);
-        console.log("A new use joined", user.room, user.username, user.id);
+        console.log("A new user joined", user.room, user.username, user.id);
       } catch (e) {
         console.log("cant join");
       }
@@ -59,6 +59,7 @@ module.exports = function (io) {
       socketsInstances();
       return callback({ user });
     });
+
 
     socket.on("takeInitialIO", ({ id, inputText, outputText }) => {
       console.log("takeInitialIO", inputText, outputText);
