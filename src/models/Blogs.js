@@ -1,20 +1,16 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const bcrypt = require('bcryptjs');
 
 const blogSchema = new mongoose.Schema({
-  Title:{
-    type:String,
-    trim:true,
-    required:true
-  },
-  Description:{
-    type:String,
-    trim:true
-  },
   Body:{
     type:String,
+    required:true
   },
+  User:{
+    type:mongoose.Schema.Types.ObjectId,
+    // required:true,
+    ref:'User'
+  }
 },{
   timestamps:true
 });

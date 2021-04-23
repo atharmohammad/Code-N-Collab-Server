@@ -21,9 +21,6 @@ const userSchema = new mongoose.Schema({
   Password:{
     type:String,
     trim:true,
-    validate:(value)=>{
-      //validate the Password
-    },
   },
   CodeforcesHandle:{
     type:String,
@@ -42,7 +39,7 @@ const userSchema = new mongoose.Schema({
 });
 
 
-userschema.pre('save',async function(next){
+userSchema.pre('save',async function(next){
   const user = this;
   if(user.isModified('Password')){
     user.Password = await bcrypt.hash(user.Password,8) //Hash it 8 times
