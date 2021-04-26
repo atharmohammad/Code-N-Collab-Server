@@ -1,9 +1,8 @@
 const axios = require("axios");
 const KEY = require("../../Configs/config");
-const { addUser, removeUser, getUser } = require("../utils/Users");
+const { addUser, removeUser, getUser,getUsersInRoom } = require("../utils/Users");
 
 module.exports = function (io) {
-  console.log("started");
 
   io.on("connection", (socket) => {
     socket.on("join", ({ username, room }, callback) => {
@@ -15,6 +14,8 @@ module.exports = function (io) {
       }
       try {
         socket.join(user.room);
+        const teamMembers  = getUsersInRoom(user.room) 
+        io.to(user.room).emit('peopleInRoom',teamMembers); 
         console.log("A new user joined", user.room, user.username, user.id);
       } catch (e) {
         console.log("cant join");
@@ -83,7 +84,9 @@ module.exports = function (io) {
         try {
           const socketsInstances = async () => {
             const clients = await io.in(user.room).fetchSockets();
-
+            const teamMembers  = getUsersInRoom(user.room) 
+            io.to(user.room).emit('peopleInRoom',teamMembers); 
+           
             if (clients.length == 0) {
               axios
                 .delete(
