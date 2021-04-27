@@ -1,22 +1,21 @@
 const axios = require("axios");
 const KEY = require("../../Configs/config");
-const { addUser, removeUser, getUser,getUsersInRoom } = require("../utils/Users");
+const { addUser, removeUser, getUser,getUsersInRoom,removePassword } = require("../utils/Users");
 
 module.exports = function (io) {
 
   io.on("connection", (socket) => {
-    socket.on("join", ({ username, room }, callback) => {
-      const { error, user } = addUser({ id: socket.id, username, room });
+    socket.on("join", ({ username, room,password }, callback) => {
+      const { error, user } = addUser({ id: socket.id, username, room, password });
 
       if (error) {
-        console.log("ops");
         return callback({ error });
       }
       try {
         socket.join(user.room);
         const teamMembers  = getUsersInRoom(user.room) 
         io.to(user.room).emit('peopleInRoom',teamMembers); 
-        console.log("A new user joined", user.room, user.username, user.id);
+        console.log("A new user joined", user.room, user.username);
       } catch (e) {
         console.log("cant join");
       }
@@ -64,13 +63,13 @@ module.exports = function (io) {
 
     socket.on("takeInitialIO", ({ id, inputText, outputText }) => {
       console.log("takeInitialIO", inputText, outputText);
-      console.log("done");
       io.to(id).emit("initialIO", { inputText, outputText });
     });
 
     socket.on("changeIO", ({ inputText, outputText }) => {
       const user = getUser(socket.id);
-      console.log("changeIO", user);
+      if(!user)
+        return
       socket.broadcast
         .to(user.room)
         .emit("initialIO", { inputText, outputText });
@@ -79,15 +78,21 @@ module.exports = function (io) {
     socket.on("disconnect", () => {
       //Deleting the model when everyone leaves the room
       const user = removeUser(socket.id);
-      console.log("disconnecting", socket.id, user);
+      if(!user)
+        return;
+      console.log("disconnecting", user);
+      
       if (user) {
         try {
           const socketsInstances = async () => {
             const clients = await io.in(user.room).fetchSockets();
             const teamMembers  = getUsersInRoom(user.room) 
-            io.to(user.room).emit('peopleInRoom',teamMembers); 
-           
+            if(clients.length){
+              io.to(user.room).emit('peopleInRoom',teamMembers); 
+            }
+            
             if (clients.length == 0) {
+              removePassword(user.room);
               axios
                 .delete(
                   "http://localhost:8000/api/rest/domains/convergence/default/models/" +
