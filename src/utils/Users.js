@@ -18,7 +18,7 @@ const addUser = ({id, username, room, password })=> {
 
     if(existingUser){
         return {
-            error:"Username is in use!"
+            error:"Username is in use! Choose some other name"
         }
     }
     
