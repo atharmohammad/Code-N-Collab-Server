@@ -29,7 +29,7 @@ const io = socketIo(server, {
 });
 
 require('./SocketFunc/userJoin')(io)
-
+require('./SocketFunc/chat')(io)
 
 
 
