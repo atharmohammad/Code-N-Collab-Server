@@ -13,18 +13,18 @@ module.exports = function (io) {
       }
       try {
         socket.join(user.room);
-        const teamMembers  = getUsersInRoom(user.room) 
-        io.to(user.room).emit('peopleInRoom',teamMembers); 
+ 
         console.log("A new user joined", user.room, user.username);
       } catch (e) {
-        console.log("cant join");
+        return console.log("cant join");
       }
 
       //To get data for newly connected client from the room
       const socketsInstances = async () => {
         try {
           const clients = await io.in(user.room).fetchSockets();
-
+          const teamMembers  = getUsersInRoom(user.room) 
+          io.to(user.room).emit('peopleInRoom',teamMembers); 
           //counts how many users are active in room
           let res = "";
           if (clients.length > 1) {
