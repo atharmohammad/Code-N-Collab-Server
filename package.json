@@ -12,10 +12,15 @@
   "dependencies": {
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
+    "cheerio": "*",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.5",
+    "node-fetch": "^2.6.1",
+    "puppeteer": "^9.0.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
     "socket.io": "^4.0.1",
     "validator": "^13.6.0"
   },
