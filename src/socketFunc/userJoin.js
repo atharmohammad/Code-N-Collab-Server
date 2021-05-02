@@ -13,7 +13,7 @@ module.exports = function (io) {
       }
       try {
         socket.join(user.room);
- 
+
         console.log("A new user joined", user.room, user.username);
       } catch (e) {
         return console.log("cant join");
@@ -23,8 +23,8 @@ module.exports = function (io) {
       const socketsInstances = async () => {
         try {
           const clients = await io.in(user.room).fetchSockets();
-          const teamMembers  = getUsersInRoom(user.room) 
-          io.to(user.room).emit('peopleInRoom',teamMembers); 
+          const teamMembers  = getUsersInRoom(user.room)
+          io.to(user.room).emit('peopleInRoom',teamMembers);
           //counts how many users are active in room
           let res = "";
           if (clients.length > 1) {
@@ -33,7 +33,9 @@ module.exports = function (io) {
 
             for (const client of clients) {
               if (askedCnt == 5) break;
-              if (client.id === socket.id) continue;
+              if (client.id === socket.id)
+               continue;
+
               askedCnt++;
               io.to(client.id).emit("sendInitialIO", { id: socket.id });
             }
@@ -61,18 +63,18 @@ module.exports = function (io) {
     });
 
 
-    socket.on("takeInitialIO", ({ id, inputText, outputText }) => {
-      console.log("takeInitialIO", inputText, outputText);
-      io.to(id).emit("initialIO", { inputText, outputText });
+    socket.on("takeInitialIO", (data) => {
+      console.log("takeInitialIO", data.inputText, data.outputText);
+      io.to(data.id).emit("IO_recieved", { inputText:data.inputText, outputText:data.outputText });
     });
 
-    socket.on("changeIO", ({ inputText, outputText }) => {
+    socket.on("changeIO", (data) => {
       const user = getUser(socket.id);
       if(!user)
         return
       socket.broadcast
         .to(user.room)
-        .emit("initialIO", { inputText, outputText });
+        .emit("IO_recieved", data);
     });
 
     socket.on("disconnect", () => {
@@ -81,16 +83,16 @@ module.exports = function (io) {
       if(!user)
         return;
       console.log("disconnecting", user);
-      
+
       if (user) {
         try {
           const socketsInstances = async () => {
             const clients = await io.in(user.room).fetchSockets();
-            const teamMembers  = getUsersInRoom(user.room) 
+            const teamMembers  = getUsersInRoom(user.room)
             if(clients.length){
-              io.to(user.room).emit('peopleInRoom',teamMembers); 
+              io.to(user.room).emit('peopleInRoom',teamMembers);
             }
-            
+
             if (clients.length == 0) {
               removePassword(user.room);
               axios
