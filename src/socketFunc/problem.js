@@ -7,13 +7,16 @@ module.exports = function (io) {
           Please input correct url !<br/> Make sure Url is from following websites : geeksforgeeks , codeforces , codechef , atcoder
       </div>`
       let problem;
-      if(link.includes("codeforces")){
+      if(link == null || link == undefined){
+        problem = selectorDiv;
+      }
+      else if(link.includes("codeforces.com")){
         problem = await codeforces(link);
-      }else if(link.includes('codechef')){
+      }else if(link.includes('codechef.com')){
         problem = await codechef(link);
-      }else if(link.includes('geeksforgeeks')){
+      }else if(link.includes('geeksforgeeks.org')){
         problem = await geeksforgeeks(link);
-      }else if(link.includes("atcoder")){
+      }else if(link.includes("atcoder.jp")){
         problem = await atcoder(link);
       }
       else{
