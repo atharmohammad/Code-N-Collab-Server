@@ -35,10 +35,10 @@ async function codeforces(URL){
   const browser = await puppeteer.launch({headless:true});
   const page = await browser.newPage();
   await page.goto(URL);
-  const text = await page.evaluate(function(){
+  const text = await page.evaluate(async function(){
     try{
       return document.querySelector(`#pageContent > div.problemindexholder > div.ttypography`)
-      .outerHTML
+      .outerHTML;
     }catch(e){
       return `<div>
           Please input correct url !<br/> Make sure Url is from following websites : geeksforgeeks , codeforces , codechef , atcoder,cses
