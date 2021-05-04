@@ -4,7 +4,7 @@ const puppeteer = require('puppeteer');
 module.exports = function (io) {
   io.on("connection", (socket) => {
     socket.on("codeforces-problem",async(link)=>{
-      let problem;
+      let problem = "";
       if(link == null || link == undefined){
         console.log('link not defined')
       }
@@ -20,9 +20,9 @@ module.exports = function (io) {
         problem = await cses(link);
       }
       else{
-        problem = giveSelectorDiv();
+        problem = "";
       }
-      
+
       const user = getUser(socket.id)
       if(!user){
         return;
