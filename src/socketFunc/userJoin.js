@@ -39,19 +39,6 @@ module.exports = function (io) {
               askedCnt++;
               io.to(client.id).emit("sendInitialIO", { id: socket.id });
             }
-
-            //only if there are other clients than only we get data because otherwise models has not been created
-            res = await axios.get(
-              "http://localhost:8000/api/rest/domains/convergence/default/models/" +
-                user.room,
-              {
-                headers: {
-                  Authorization: KEY,
-                },
-              }
-            );
-            console.log(res.data.body.data.text);
-            io.to(socket.id).emit("initialCode", res.data.body.data.text);
           }
         } catch (e) {
           //console.log('hippi ',e)
