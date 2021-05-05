@@ -1,5 +1,4 @@
 const axios = require("axios");
-const KEY = require("../../Configs/config");
 const { addUser, removeUser, getUser,getUsersInRoom,removePassword } = require("../utils/Users");
 
 module.exports = function (io) {
@@ -82,22 +81,6 @@ module.exports = function (io) {
 
             if (clients.length == 0) {
               removePassword(user.room);
-              axios
-                .delete(
-                  "http://localhost:8000/api/rest/domains/convergence/default/models/" +
-                    user.room,
-                  {
-                    headers: {
-                      Authorization: KEY,
-                    },
-                  }
-                )
-                .then((res) => {
-                  console.log("Deleted");
-                })
-                .catch((e) => {
-                  //console.log(e)
-                });
             }
             socket.leave(user.room);
             console.log("Disconnected");
