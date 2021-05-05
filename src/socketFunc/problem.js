@@ -1,14 +1,12 @@
 const { getUser } = require("../utils/Users");
 const puppeteer = require('puppeteer');
+
 module.exports = function (io) {
   io.on("connection", (socket) => {
     socket.on("codeforces-problem",async(link)=>{
-      let selectorDiv = `<div>
-          Please input correct url !<br/> Make sure Url is from following websites : geeksforgeeks , codeforces , codechef , atcoder,cses
-      </div>`
-      let problem;
+      let problem = "";
       if(link == null || link == undefined){
-        problem = selectorDiv;
+        console.log('link not defined')
       }
       else if(link.includes("codeforces.com")){
         problem = await codeforces(link);
@@ -22,10 +20,19 @@ module.exports = function (io) {
         problem = await cses(link);
       }
       else{
-        problem = selectorDiv;
+        problem = "";
       }
+
       const user = getUser(socket.id)
-      console.log(user)
+      if(!user){
+        return;
+      }
+      if(!problem){
+        problem =  `<div className='error'>
+        Please input correct url !<br/> Make sure Url is from following websites : geeksforgeeks , codeforces , codechef , atcoder,cses
+        </div>`;
+      }
+      console.log(problem)
       io.to(user.room).emit('problem',problem);
     })
   });
@@ -35,14 +42,12 @@ async function codeforces(URL){
   const browser = await puppeteer.launch({headless:true});
   const page = await browser.newPage();
   await page.goto(URL);
-  const text = await page.evaluate(function(){
+  const text = await page.evaluate(async function(){
     try{
       return document.querySelector(`#pageContent > div.problemindexholder > div.ttypography`)
-      .outerHTML
+      .outerHTML;
     }catch(e){
-      return `<div>
-          Please input correct url !<br/> Make sure Url is from following websites : geeksforgeeks , codeforces , codechef , atcoder,cses
-      </div>`
+      return '';
     }
   })
   await browser.close();
@@ -58,9 +63,7 @@ async function codechef(URL){
     try{
       return document.querySelector("#content-regions > section.content-area.small-8.columns.pl0").outerHTML
     }catch(e){
-      return `<div>
-          Please input correct url !<br/> Make sure Url is from following websites : geeksforgeeks , codeforces , codechef , atcoder,cses
-      </div>`
+      return '';
     }
   })
   await browser.close();
@@ -76,9 +79,7 @@ async function geeksforgeeks(URL){
     try{
       return document.querySelector("#problems > div.problem-statement").outerHTML
     }catch(e){
-      return `<div>
-          Please input correct url !<br/> Make sure Url is from following websites : geeksforgeeks , codeforces , codechef , atcoder,cses
-      </div>`
+      return '';
     }
   })
   await browser.close();
@@ -94,9 +95,7 @@ async function atcoder(URL){
     try{
       return document.querySelector("#task-statement > span > span.lang-en").outerHTML
     }catch(e){
-      return `<div>
-          Please input correct url !<br/> Make sure Url is from following websites : geeksforgeeks , codeforces , codechef , atcoder,cses
-      </div>`
+      return '';
     }
   })
   await browser.close();
@@ -113,9 +112,7 @@ async function cses(URL){
       return document.querySelector("body > div.skeleton > div.content-wrapper > div.content").outerHTML
 
     }catch(e){
-      return `<div>
-          Please input correct url !<br/> Make sure Url is from following websites : geeksforgeeks , codeforces , codechef , atcoder,cses
-      </div>`
+      return '';
     }
   })
   await browser.close();
