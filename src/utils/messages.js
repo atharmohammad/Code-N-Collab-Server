@@ -1,6 +1,6 @@
-const generateMsg = ({username, text})=> {
-    return{
-        username,
-        text,
-    }
-}
+const generateMsg = ({ username, text }) => {
+  return {
+    username,
+    text,
+  };
+};
