@@ -12,12 +12,12 @@ module.exports = function (io) {
 
       compilerFunc(language, code, input)
         .then((res) => {
-          console.log('response',res.data);
+          console.log("response", res.data);
           io.to(user.room).emit("COMPILE_OFF", res.data);
         })
         .catch((e) => {
-          console.log('error:',e.data);
-          io.to(user.room).emit("COMPILE_OFF",e.data);
+          console.log("error:", e.data);
+          io.to(user.room).emit("COMPILE_OFF", e.data);
         });
     });
   });

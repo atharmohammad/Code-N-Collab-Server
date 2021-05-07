@@ -45,7 +45,7 @@ const languageMapper = (lang_mode) => {
 
 const compilerFunc = async (lang, code, input) => {
   const { language, versionIndex } = languageMapper(lang);
-  console.log("lang:",lang,"code:",code,"input:",input)
+  console.log("lang:", lang, "code:", code, "input:", input);
   const url = "https://api.jdoodle.com/v1/execute";
   const sendData = {
     clientId: "d4b7771b3992895017e5ac5f42ec46e6",
@@ -74,4 +74,4 @@ const compilerFunc = async (lang, code, input) => {
 
 module.exports = {
   compilerFunc,
-}
+};
