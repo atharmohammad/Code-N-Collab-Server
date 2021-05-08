@@ -1,4 +1,5 @@
 const axios = require("axios");
+const {AwesomeKey} = require("./getKey");
 
 const languageMapper = (lang_mode) => {
   switch (lang_mode) {
@@ -47,10 +48,12 @@ const compilerFunc = async (lang, code, input) => {
   const { language, versionIndex } = languageMapper(lang);
   console.log("lang:", lang, "code:", code, "input:", input);
   const url = "https://api.jdoodle.com/v1/execute";
+  const [clientId, clientSecret] = AwesomeKey()
+  console.log('keys',clientId, clientSecret)
+  
   const sendData = {
-    clientId: "d4b7771b3992895017e5ac5f42ec46e6",
-    clientSecret:
-      "37f00b6e1c5f23675ff6bd195a0e6d6631b9f8384dd9c25d1a82a5d274256db3",
+    clientId,
+    clientSecret,
     script: code,
     stdin: input,
     language,
@@ -66,9 +69,13 @@ const compilerFunc = async (lang, code, input) => {
     });
   } catch (e) {
     response = e;
-    return { data: { output: "Error:404\nOops Something went wrong\n:-(" } };
+    return {
+      data: {
+        e:
+          "Error:404\nOops Something went wrong\nIt seems you are offline\n:-(",
+      },
+    };
   }
-
   return response;
 };
 
