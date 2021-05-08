@@ -16,7 +16,7 @@ module.exports = function (io) {
           io.to(user.room).emit("COMPILE_OFF", res.data);
         })
         .catch((e) => {
-          console.log("error:", e.data);
+          console.log("error:", e);
           io.to(user.room).emit("COMPILE_OFF", e.data);
         });
     });
