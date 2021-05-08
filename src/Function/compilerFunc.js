@@ -66,7 +66,7 @@ const compilerFunc = async (lang, code, input) => {
     });
   } catch (e) {
     response = e;
-    return { data: { output: "Error:404\nOops Something went wrong\n:-(" } };
+    return { data: { e: "Error:404\nOops Something went wrong\nIt seems you are offline\n:-(" } };
   }
 
   return response;
