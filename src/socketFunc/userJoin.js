@@ -7,6 +7,7 @@ const {
   removePassword,
 } = require("../utils/Users");
 
+
 module.exports = function (io) {
   io.on("connection", (socket) => {
     socket.on("join", ({ username, room, password }, callback) => {
@@ -74,8 +75,11 @@ module.exports = function (io) {
     socket.on("disconnect", () => {
       //Deleting the model when everyone leaves the room
       const user = removeUser(socket.id);
-      if (!user) return;
-      console.log("disconnecting", user);
+
+      if(!user)
+        return;
+
+    console.log("disconnecting", user);
 
       if (user) {
         try {

@@ -31,5 +31,6 @@ require("./SocketFunc/userJoin")(io);
 require("./SocketFunc/chat")(io);
 require("./SocketFunc/Compile")(io);
 require("./SocketFunc/problem")(io);
+require("./SocketFunc/Contest-Join")(io);
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
