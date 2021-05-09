@@ -17,7 +17,9 @@ module.exports = function(io){
     })
     socket.on("Leave-Contest",(user)=>{
       console.log("contest-Left");
-      removeContestUser();
+      const contest = removeContestUser({room:user.room,name:user.name});
+      console.log(contest)
+      io.in(user.room).emit("Update",contest);
     })
   })
 }

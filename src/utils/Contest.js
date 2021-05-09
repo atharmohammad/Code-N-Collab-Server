@@ -12,15 +12,23 @@ const checkContest = (roomId, name, socketid) => {
     }
   });
 
+  let alreadyJoined = false;
+  if(existingContest){
+    existingContest.UsersId.forEach((user,index)=>{
+      if(user === name){
+        alreadyJoined = true;
+      }
+    })
+  }
+
   if (!contestExist) {
     return createContest(roomId, name, socketid);
   } else if (existingContest.length == 4) {
     return { error: "Room is Full", contest: null };
-  } else if (existingContest.started) {
+  } else if (existingContest.Started && !alreadyJoined) {
     return { error: "Contest has Already Started !", contest: null };
   } else if (
     contestExist &&
-    !existingContest.Started &&
     existingContest.UsersId.length < 4
   ) {
     return joinContest(roomId, name, existingIndex, socketid, existingContest);
@@ -88,9 +96,16 @@ const joinContest = (
 const removeContestUser = ({ room, name }) => {
   const userArray = [];
   const userIdArray = [];
+  let contestIndex = -1;
 
-  const contestUserArray = contests[room].Users;
-  const contestUserIdArray = contests[room].UsersId;
+  contests.forEach((contest, i) => {
+    if(contest.Id === room){
+      contestIndex = i;
+    }
+  });
+
+  const contestUserArray = contests[contestIndex].Users;
+  const contestUserIdArray = contests[contestIndex].UsersId;
 
   contestUserArray.forEach((user, i) => {
     //creating new user Array
@@ -106,8 +121,10 @@ const removeContestUser = ({ room, name }) => {
     }
   });
 
-  contests[room].Users = userArray;
-  contests[room].UsersId = userIdArray;
+  contests[contestIndex].Users = userArray;
+  contests[contestIndex].UsersId = userIdArray;
+
+  return contests[contestIndex];
 };
 
 const startContest = (roomId) => {
