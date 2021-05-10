@@ -12,5 +12,10 @@ module.exports = function (io) {
       console.log(user);
       io.to(user.room).emit("serverMsg", data);
     });
+    socket.on("Contest-Msg",({message,room,name})=>{
+      const data = { text: message, user: name };
+      console.log(data);
+      io.to(room).emit("serverMsg",data);
+    });
   });
 };

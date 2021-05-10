@@ -138,8 +138,17 @@ const startContest = (roomId) => {
   return contests[contestIndex];
 };
 
+const getTeamMembers = (userIds)=>{
+  const newId = [];
+  userIds.forEach((id) => {
+    newId.push({username:id});
+  });
+  return newId;
+}
+
 module.exports = {
   checkContest: checkContest,
   removeContestUser: removeContestUser,
-  startContest:startContest
+  startContest:startContest,
+  getTeamMembers:getTeamMembers
 };
