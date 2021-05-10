@@ -59,18 +59,22 @@ module.exports = function (io) {
     });
 
     socket.on("takeInitialIO", (data) => {
-      console.log("takeInitialIO", data.inputText, data.outputText);
-      io.to(data.id).emit("IO_recieved", {
-        inputText: data.inputText,
-        outputText: data.outputText,
-      });
+      if(data.reason === "code-editor"){
+        console.log("takeInitialIO", data.inputText, data.outputText);
+        io.to(data.id).emit("IO_recieved", {
+          inputText: data.inputText,
+          outputText: data.outputText,
+        });
+      }
     });
 
     socket.on("changeIO", (data) => {
-      const sids = io.of("/").adapter.sids;
-      const room = [...sids.get(socket.id)][1];
-      if (!room) return;
-      socket.broadcast.to(room).emit("IO_recieved", data);
+      if(data.reason === "code-editor"){
+        const sids = io.of("/").adapter.sids;
+        const room = [...sids.get(socket.id)][1];
+        if (!room) return;
+        socket.broadcast.to(room).emit("IO_recieved", data);
+      }
     });
 
     socket.on("disconnect", () => {
