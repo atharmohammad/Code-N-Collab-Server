@@ -4,20 +4,22 @@ const { compilerFunc } = require("../Function/compilerFunc");
 module.exports = function (io) {
   io.on("connection", (socket) => {
     socket.on("Compile_ON", ({ language, code, input }) => {
-      const user = getUser(socket.id);
-      if (!user) {
+      const sids = io.of("/").adapter.sids;
+      const room = [...sids.get(socket.id)][1];
+
+      if (!room) {
         return;
       }
-      socket.broadcast.to(user.room).emit("Compile_ON");
+      socket.broadcast.to(room).emit("Compile_ON");
 
       compilerFunc(language, code, input)
         .then((res) => {
           console.log("response", res.data);
-          io.to(user.room).emit("COMPILE_OFF", res.data);
+          io.to(room).emit("COMPILE_OFF", res.data);
         })
         .catch((e) => {
           console.log("error:", e);
-          io.to(user.room).emit("COMPILE_OFF", e.data);
+          io.to(room).emit("COMPILE_OFF", e.data);
         });
     });
   });

@@ -67,9 +67,10 @@ module.exports = function (io) {
     });
 
     socket.on("changeIO", (data) => {
-      const user = getUser(socket.id);
-      if (!user) return;
-      socket.broadcast.to(user.room).emit("IO_recieved", data);
+      const sids = io.of("/").adapter.sids;
+      const room = [...sids.get(socket.id)][1];
+      if (!room) return;
+      socket.broadcast.to(room).emit("IO_recieved", data);
     });
 
     socket.on("disconnect", () => {
