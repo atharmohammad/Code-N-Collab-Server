@@ -3,7 +3,9 @@ const {
   removeContestUser,
   startContest,
   getTeamMembers,
+  createURL
 } = require("../utils/Contest");
+const axios = require("axios");
 
 module.exports = function (io) {
   io.on("connection", (socket) => {
@@ -20,11 +22,18 @@ module.exports = function (io) {
         io.in(user.RoomId).emit("peopleInRoom", teamMembers);
       }
     });
-    socket.on("Start-Contest", (roomId) => {
-      const contest = startContest(roomId);
-      const teamMembers = getTeamMembers(contest.UsersId);
-      io.to(roomId).emit("Update", contest); //First update then send memebers
-      io.to(roomId).emit("peopleInRoom", teamMembers);
+    socket.on("Start-Contest", ({room,problemTags,
+                                  minRating,maxRating}) => {
+      const URL = createURL(problemTags);
+         const problems = axios.get(URL)
+            .then(res=>{
+              const contest =  startContest({room,
+              problemTags,minRating,maxRating,res});
+              const teamMembers = getTeamMembers(contest.UsersId);
+              io.to(room).emit("Update", contest); //First update then send memebers
+              io.to(room).emit("peopleInRoom", teamMembers);
+          })
+          .catch(e=>console.log(e));
     });
     socket.on("Leave-Contest", (user) => {
       console.log("contest-Left");

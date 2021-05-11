@@ -1,22 +1,30 @@
+const axios = require("axios");
+
 const contests = []; //contains all contests
 
 const checkContest = (roomId, name, socketid) => {
   let contestExist = false;
   let existingContest = null;
   let existingIndex = null;
-  contests.forEach((contest, index) => {
+  contests.every((contest, index) => {
     if (contest.Id === roomId) {
       contestExist = true; //Searching if contest already exist
       existingContest = contest;
       existingIndex = index;
+      return false;
+    }else{
+      return true;
     }
   });
 
   let alreadyJoined = false;
   if(existingContest){
-    existingContest.UsersId.forEach((user,index)=>{
+    existingContest.UsersId.every((user,index)=>{
       if(user === name){
         alreadyJoined = true;
+        return false;
+      }else{
+        return true;
       }
     })
   }
@@ -43,7 +51,6 @@ const checkContest = (roomId, name, socketid) => {
 const createContest = (roomId, name, socketid) => {
   const user = {
     Name: name,
-    Problems: [],
     SocketId: socketid,
   };
   const lockout = {
@@ -51,7 +58,11 @@ const createContest = (roomId, name, socketid) => {
     Users: [user],
     UsersId: [name],
     EndTime: "2hrs",
+    Problems:[],
     Started: false,
+    problemTags:[],
+    minRating:0,
+    maxRating:0
   };
   contests.push(lockout);
   console.log("contest-created!");
@@ -67,10 +78,13 @@ const joinContest = (
 ) => {
   let userExist = false,userIndex = -1;
 
-  existingContest.UsersId.forEach((username, i) => {
+  existingContest.UsersId.every((username, i) => {
     if (username === name) {
        userExist = true;
        userIndex = i;
+       return false;
+    }else{
+      return true;
     }
   });
 
@@ -82,7 +96,6 @@ const joinContest = (
 
   const user = {
     Name: name,
-    Problems: [],
     SocketId: socketid,
   };
 
@@ -98,9 +111,12 @@ const removeContestUser = ({ room, name }) => {
   const userIdArray = [];
   let contestIndex = -1;
 
-  contests.forEach((contest, i) => {
+  contests.every((contest, i) => {
     if(contest.Id === room){
       contestIndex = i;
+      return false;
+    }else{
+      return true;
     }
   });
 
@@ -127,16 +143,27 @@ const removeContestUser = ({ room, name }) => {
   return contests[contestIndex];
 };
 
-const startContest = (roomId) => {
-  contests.forEach((cont, ind) => {
-    if (cont.Id === roomId) {
+const startContest = ({room,problemTags,
+        minRating,maxRating,problems}) => {
+  contests.every((cont, ind) => {
+    if (cont.Id === room) {
       contestIndex = ind;
       contests[ind].Started = true; //Starting the contest
+      return false;
+    }else{
+      return true;
     }
   });
+  /////Setting up the contest////
+  contests[contestIndex].problemTags = problemTags;
+  contests[contestIndex].minRating = minRating;
+  contests[contestIndex].maxRating = maxRating;
+  /////***///////////
+
   console.log(contests[contestIndex])
   return contests[contestIndex];
 };
+
 
 const getTeamMembers = (userIds)=>{
   const newId = [];
@@ -146,9 +173,23 @@ const getTeamMembers = (userIds)=>{
   return newId;
 }
 
+const createURL = (problemTags)=>{
+  let tags = "";
+  problemTags.forEach((tag, i) => {
+    if(i != 0){
+      tags += ";" + tag.label;
+    }else{
+      tags += tag.label;
+    }
+  });
+  const URL =  `https://codeforces.com/api/problemset.problems?tags=${tags}`;
+  return URL;
+}
+
 module.exports = {
   checkContest: checkContest,
   removeContestUser: removeContestUser,
   startContest:startContest,
-  getTeamMembers:getTeamMembers
+  getTeamMembers:getTeamMembers,
+  createURL : createURL
 };
