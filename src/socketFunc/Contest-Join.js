@@ -28,7 +28,7 @@ module.exports = function (io) {
          const problems = axios.get(URL)
             .then(res=>{
               const problemArray = res.data.result.problems.slice(0);
-              console.log(problemArray);
+              // console.log(problemArray);
               const contest =  startContest({room,
               problemTags,minRating,maxRating,problemArray});
               const teamMembers = getTeamMembers(contest.UsersId);
