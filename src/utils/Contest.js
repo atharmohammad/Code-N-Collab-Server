@@ -144,7 +144,7 @@ const removeContestUser = ({ room, name }) => {
 };
 
 const startContest = ({room,problemTags,
-        minRating,maxRating,problems}) => {
+        minRating,maxRating,problemArray}) => {
   contests.every((cont, ind) => {
     if (cont.Id === room) {
       contestIndex = ind;
@@ -154,7 +154,31 @@ const startContest = ({room,problemTags,
       return true;
     }
   });
+  ////setting up problems////
+  shuffleArray(problemArray);
+  
+  const problems = [];
+  const problemLink = "https://codeforces.com/problemset/problem/";
+  let problemCount = 0;
+  problemArray.every((problem,i)=>{
+      if(problem.rating >= parseInt(minRating) && problem.rating <= parseInt(maxRating)){
+        const link = problemLink + problem.contestId + '/' + problem.index + '/';
+        problems.push({link:link,
+          name:problem.name,
+          points:problem.rating});
+        problemCount++;
+        if(problemCount == 5)
+          return false;
+
+        return true;
+      }else{
+        return true;
+      }
+  })
+
+  ////********/////////
   /////Setting up the contest////
+  contests[contestIndex].Problems = problems;
   contests[contestIndex].problemTags = problemTags;
   contests[contestIndex].minRating = minRating;
   contests[contestIndex].maxRating = maxRating;
@@ -184,6 +208,15 @@ const createURL = (problemTags)=>{
   });
   const URL =  `https://codeforces.com/api/problemset.problems?tags=${tags}`;
   return URL;
+}
+
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
 }
 
 module.exports = {

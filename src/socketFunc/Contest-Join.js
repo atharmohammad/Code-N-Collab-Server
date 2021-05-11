@@ -27,8 +27,10 @@ module.exports = function (io) {
       const URL = createURL(problemTags);
          const problems = axios.get(URL)
             .then(res=>{
+              const problemArray = res.data.result.problems.slice(0);
+              console.log(problemArray);
               const contest =  startContest({room,
-              problemTags,minRating,maxRating,res});
+              problemTags,minRating,maxRating,problemArray});
               const teamMembers = getTeamMembers(contest.UsersId);
               io.to(room).emit("Update", contest); //First update then send memebers
               io.to(room).emit("peopleInRoom", teamMembers);
