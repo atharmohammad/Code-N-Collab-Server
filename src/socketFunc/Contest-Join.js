@@ -25,12 +25,14 @@ module.exports = function (io) {
     socket.on(
       "Start-Contest",
       ({ room, problemTags, minRating, maxRating }) => {
+        problemTags = problemTags.map((e, idx) => {
+          return { key: idx, label: e };
+        });
         const URL = createURL(problemTags);
         const problems = axios
           .get(URL)
           .then((res) => {
             const problemArray = res.data.result.problems.slice(0);
-            // console.log(problemArray);
             const contest = startContest({
               room,
               problemTags,
