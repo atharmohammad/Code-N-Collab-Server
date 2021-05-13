@@ -1,74 +1,76 @@
 const passwordList = [];
 const users = [];
 
-const addUser = ({id, username, room, password })=> {
-    username = username.trim().toLowerCase();
-    room = room.trim().toLowerCase();
-    password = password.trim()
-    
-    if(!username || !room){
-        return {
-            error:'Username and room are required'
-        }
-    }
+const addUser = ({ id, username, room, password }) => {
+  username = username.trim().toLowerCase();
+  room = room.trim().toLowerCase();
+  password = password.trim();
 
-    const existingUser = users.find((user)=> {
-        return user.room === room && user.username === username
-    })
+  if (!username || !room) {
+    return {
+      error: "Username and room are required",
+    };
+  }
 
-    if(existingUser){
-        return {
-            error:"Username is in use! Choose some other name"
-        }
-    }
-    
-    const roomPassword = passwordList.find((roomPassword)=> {
-        return roomPassword.room === room;
-    })
-    
-    if(roomPassword){
-      if(roomPassword.password !== password)
-        return {error:"Password did not matched"};
-    }else{
-      const p = {room, password};
-      passwordList.push(p);
-    }
+  const existingUser = users.find((user) => {
+    return user.room === room && user.username === username;
+  });
 
-    const user = {id, username, room}
-    users.push(user)
-    return { user }
-}
+  if (existingUser) {
+    return {
+      error: "Username is in use! Choose some other name",
+    };
+  }
 
+  const roomPassword = passwordList.find((roomPassword) => {
+    return roomPassword.room === room;
+  });
 
-const removeUser = (id)=>{
-    const index = users.findIndex((user)=> user.id === id)
+  if (roomPassword) {
+    if (roomPassword.password !== password)
+      return { error: "Password did not matched" };
+  } else {
+    const p = { room, password };
+    passwordList.push(p);
+  }
 
-    if(index !== -1){
-        return users.splice(index,1)[0];
-    }
-}
+  const user = { id, username, room };
+  users.push(user);
+  return { user };
+};
 
+const removeUser = (id) => {
+  const index = users.findIndex((user) => user.id === id);
+
+  if (index !== -1) {
+    return users.splice(index, 1)[0];
+  }else{
+    return null;
+  }
+};
 
 const getUser = (id) => {
-    return users.find((user)=>user.id === id)
-}
+  return users.find((user) => user.id === id);
+};
 
-const getUsersInRoom = (room) =>{
-    return users.filter((user)=>user.room === room)
-}
+const getUsersInRoom = (room) => {
+  return users.filter((user) => user.room === room);
+};
 
-const removePassword = (room)=>{
-    const index = passwordList.findIndex((roomPassword)=> roomPassword.room === room)
+const removePassword = (room) => {
+  const index = passwordList.findIndex(
+    (roomPassword) => roomPassword.room === room
+  );
 
-    if(index !== -1){
-        return passwordList.splice(index,1)[0];
-    }
-}
+  if (index !== -1) {
+    return passwordList.splice(index, 1)[0];
+  }
+};
 
 module.exports = {
-    addUser,
-    removeUser,
-    getUser,
-    getUsersInRoom,
-    removePassword,
-}
+  addUser,
+  removeUser,
+  getUser,
+  getUsersInRoom,
+  removePassword,
+};

@@ -1,16 +1,34 @@
 const { getUser } = require("../utils/Users");
+const { compilerFunc } = require("../Function/compilerFunc");
 
 module.exports = function (io) {
-    io.on("connection", (socket) => {
-        socket.on('Compile_ON',()=>{
-            const user = getUser(socket.id)
-            console.log(user)
-            socket.broadcast.to(user.room).emit('Compile_ON');
+  io.on("connection", (socket) => {
+    socket.on("Compile_ON", ({ language, code, input,reason}) => {
+      const sids = io.of("/").adapter.sids;
+      const room = [...sids.get(socket.id)][1];
+
+      if (!room) {
+        return;
+      }
+
+      if(reason === "code-editor")
+        socket.broadcast.to(room).emit("Compile_ON");
+
+      compilerFunc(language, code, input)
+        .then((res) => {
+          console.log("response", res.data);
+          if(reason === "code-editor")
+            io.to(room).emit("COMPILE_OFF", res.data);
+          else
+            io.to(socket.id).emit("COMPILE_OFF", res.data)
         })
-        socket.on('Compile_OFF',()=>{
-            const user = getUser(socket.id)
-            console.log(user)
-            socket.broadcast.to(user.room).emit('Compile_OFF');
-        })
-     });
-  };
+        .catch((e) => {
+          console.log("error:", e);
+          if(reason === "code-editor")
+            io.to(room).emit("COMPILE_OFF", e.data);
+          else
+            io.to(socket.id).emit("COMPILE_OFF", res.data)
+        });
+    });
+  });
+};

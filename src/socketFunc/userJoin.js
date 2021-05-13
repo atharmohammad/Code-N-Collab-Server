@@ -1,12 +1,22 @@
 const axios = require("axios");
-const KEY = require("../../Configs/config");
-const { addUser, removeUser, getUser,getUsersInRoom,removePassword } = require("../utils/Users");
+const {
+  addUser,
+  removeUser,
+  getUser,
+  getUsersInRoom,
+  removePassword,
+} = require("../utils/Users");
+
 
 module.exports = function (io) {
-
   io.on("connection", (socket) => {
-    socket.on("join", ({ username, room,password }, callback) => {
-      const { error, user } = addUser({ id: socket.id, username, room, password });
+    socket.on("join", ({ username, room, password }, callback) => {
+      const { error, user } = addUser({
+        id: socket.id,
+        username,
+        room,
+        password,
+      });
 
       if (error) {
         return callback({ error });
@@ -23,8 +33,8 @@ module.exports = function (io) {
       const socketsInstances = async () => {
         try {
           const clients = await io.in(user.room).fetchSockets();
-          const teamMembers  = getUsersInRoom(user.room)
-          io.to(user.room).emit('peopleInRoom',teamMembers);
+          const teamMembers = getUsersInRoom(user.room);
+          io.to(user.room).emit("peopleInRoom", teamMembers);
           //counts how many users are active in room
           let res = "";
           if (clients.length > 1) {
@@ -33,8 +43,7 @@ module.exports = function (io) {
 
             for (const client of clients) {
               if (askedCnt == 5) break;
-              if (client.id === socket.id)
-               continue;
+              if (client.id === socket.id) continue;
 
               askedCnt++;
               io.to(client.id).emit("sendInitialIO", { id: socket.id });
@@ -49,55 +58,45 @@ module.exports = function (io) {
       return callback({ user });
     });
 
-
     socket.on("takeInitialIO", (data) => {
-      console.log("takeInitialIO", data.inputText, data.outputText);
-      io.to(data.id).emit("IO_recieved", { inputText:data.inputText, outputText:data.outputText });
+      if(data.reason === "code-editor"){
+        console.log("takeInitialIO", data.inputText, data.outputText);
+        io.to(data.id).emit("IO_recieved", {
+          inputText: data.inputText,
+          outputText: data.outputText,
+        });
+      }
     });
 
     socket.on("changeIO", (data) => {
-      const user = getUser(socket.id);
-      if(!user)
-        return
-      socket.broadcast
-        .to(user.room)
-        .emit("IO_recieved", data);
+      if(data.reason === "code-editor"){
+        const sids = io.of("/").adapter.sids;
+        const room = [...sids.get(socket.id)][1];
+        if (!room) return;
+        socket.broadcast.to(room).emit("IO_recieved", data);
+      }
     });
 
     socket.on("disconnect", () => {
       //Deleting the model when everyone leaves the room
       const user = removeUser(socket.id);
+
       if(!user)
         return;
-      console.log("disconnecting", user);
+
+    console.log("disconnecting", user);
 
       if (user) {
         try {
           const socketsInstances = async () => {
             const clients = await io.in(user.room).fetchSockets();
-            const teamMembers  = getUsersInRoom(user.room)
-            if(clients.length){
-              io.to(user.room).emit('peopleInRoom',teamMembers);
+            const teamMembers = getUsersInRoom(user.room);
+            if (clients.length) {
+              io.to(user.room).emit("peopleInRoom", teamMembers);
             }
 
             if (clients.length == 0) {
               removePassword(user.room);
-              axios
-                .delete(
-                  "http://localhost:8000/api/rest/domains/convergence/default/models/" +
-                    user.room,
-                  {
-                    headers: {
-                      Authorization: KEY,
-                    },
-                  }
-                )
-                .then((res) => {
-                  console.log("Deleted");
-                })
-                .catch((e) => {
-                  //console.log(e)
-                });
             }
             socket.leave(user.room);
             console.log("Disconnected");

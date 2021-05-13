@@ -1,12 +1,11 @@
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
-const axios = require("axios");
 const port = process.env.PORT || 8080;
-const cors = require('cors');
-require('./db/mongoose');
-const userRouter = require('./routers/UserRouter');
-const blogRouter = require('./routers/BlogRouter')
+const cors = require("cors");
+require("./db/mongoose");
+const userRouter = require("./routers/UserRouter");
+const blogRouter = require("./routers/BlogRouter");
 //const KEY = require("../config");
 const app = express();
 const server = http.createServer(app);
@@ -19,8 +18,8 @@ app.use(
 );
 
 app.use(express.json());
-app.use('/user',userRouter);
-app.use('/blogs',blogRouter);
+app.use("/user", userRouter);
+app.use("/blogs", blogRouter);
 
 const io = socketIo(server, {
   cors: {
@@ -28,9 +27,10 @@ const io = socketIo(server, {
   },
 });
 
-require('./SocketFunc/userJoin')(io)
-require('./SocketFunc/chat')(io)
-require('./SocketFunc/Compile')(io)
-require('./SocketFunc/problem')(io)
+require("./SocketFunc/userJoin")(io);
+require("./SocketFunc/chat")(io);
+require("./SocketFunc/Compile")(io);
+require("./SocketFunc/problem")(io);
+require("./SocketFunc/Contest-Join")(io);
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
