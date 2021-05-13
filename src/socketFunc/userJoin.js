@@ -7,7 +7,6 @@ const {
   removePassword,
 } = require("../utils/Users");
 
-
 module.exports = function (io) {
   io.on("connection", (socket) => {
     socket.on("join", ({ username, room, password }, callback) => {
@@ -59,7 +58,7 @@ module.exports = function (io) {
     });
 
     socket.on("takeInitialIO", (data) => {
-      if(data.reason === "code-editor"){
+      if (data.reason === "code-editor") {
         console.log("takeInitialIO", data.inputText, data.outputText);
         io.to(data.id).emit("IO_recieved", {
           inputText: data.inputText,
@@ -69,7 +68,7 @@ module.exports = function (io) {
     });
 
     socket.on("changeIO", (data) => {
-      if(data.reason === "code-editor"){
+      if (data.reason === "code-editor") {
         const sids = io.of("/").adapter.sids;
         const room = [...sids.get(socket.id)][1];
         if (!room) return;
@@ -81,10 +80,9 @@ module.exports = function (io) {
       //Deleting the model when everyone leaves the room
       const user = removeUser(socket.id);
 
-      if(!user)
-        return;
+      if (!user) return;
 
-    console.log("disconnecting", user);
+      console.log("disconnecting", user);
 
       if (user) {
         try {
