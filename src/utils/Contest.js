@@ -51,9 +51,11 @@ const checkContest = (roomId, name, socketid) => {
 const createContest = (roomId, name, socketid) => {
   const user = {
     Name: name,
+    Score:0,
     SocketId: socketid,
   };
   const lockout = {
+    contestIndex : contests.length,
     Id: roomId,
     Users: [user],
     UsersId: [name],
@@ -96,6 +98,7 @@ const joinContest = (
 
   const user = {
     Name: name,
+    Score:0,
     SocketId: socketid,
   };
 
@@ -106,29 +109,11 @@ const joinContest = (
   return { error: null, contest: contests[existingIndex] };
 };
 
-const removeContestUser = ({ room, name }) => {
+const removeContestUser = ({ contestIndex, name }) => {
   const userArray = [];
   const userIdArray = [];
-  let contestIndex = -1;
 
-  contests.every((contest, i) => {
-    if(contest.Id === room){
-      contestIndex = i;
-      return false;
-    }else{
-      return true;
-    }
-  });
-
-  const contestUserArray = contests[contestIndex].Users;
   const contestUserIdArray = contests[contestIndex].UsersId;
-
-  contestUserArray.forEach((user, i) => {
-    //creating new user Array
-    if (user.Name !== name) {
-      userArray.push(user);
-    }
-  });
 
   //creating new userid array
   contestUserIdArray.forEach((id, i) => {
@@ -137,7 +122,6 @@ const removeContestUser = ({ room, name }) => {
     }
   });
 
-  contests[contestIndex].Users = userArray;
   contests[contestIndex].UsersId = userIdArray;
 
   return contests[contestIndex];
@@ -156,14 +140,16 @@ const startContest = ({room,problemTags,
   });
   ////setting up problems////
   shuffleArray(problemArray);
-  
+
   const problems = [];
   const problemLink = "https://codeforces.com/problemset/problem/";
   let problemCount = 0;
   problemArray.every((problem,i)=>{
       if(problem.rating >= parseInt(minRating) && problem.rating <= parseInt(maxRating)){
         const link = problemLink + problem.contestId + '/' + problem.index + '/';
-        problems.push({link:link,
+        problems.push({
+          key:i,
+          link:link,
           name:problem.name,
           points:problem.rating});
         problemCount++;

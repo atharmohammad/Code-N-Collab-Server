@@ -47,9 +47,12 @@ module.exports = function (io) {
           .catch((e) => console.log(e));
       }
     );
+    socket.on("Contest-Update",({roomId,contestIndex})=>{
+      const contest = updateContest(roomId,contestIndex);
+    });
     socket.on("Leave-Contest", (user) => {
       console.log("contest-Left");
-      const contest = removeContestUser({ room: user.room, name: user.name });
+      const contest = removeContestUser({ contestIndex: user.contestIndex, name: user.name });
       console.log(contest);
       const teamMembers = getTeamMembers(contest.UsersId);
       console.log(teamMembers);
