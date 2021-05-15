@@ -51,7 +51,8 @@ module.exports = function (io) {
     );
     socket.on("Contest-Update",async({roomId,contestIndex})=>{
       const contest = await updateContest(roomId,contestIndex);
-      // io.to(roomId).emit("Update",({roomId:roomId,contestIndex:contestIndex}));
+      console.log(contest)
+      io.to(roomId).emit("Update",contest);
     });
     socket.on("Leave-Contest", (user) => {
       console.log("contest-Left");

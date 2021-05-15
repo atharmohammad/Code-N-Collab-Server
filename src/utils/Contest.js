@@ -214,11 +214,12 @@ const updateContest = async(roomId,contestIndex)=>{
   const contest = contests[contestIndex];
   const unsolvedProblems = [];
 
-  contest.Problems.every((prob,i)=>{
+  contest.Problems.forEach((prob,i)=>{
     if(!contest.userToProblem.has(prob.name)){
       unsolvedProblems.push(prob.name);
     }
   });
+  console.log(unsolvedProblems);
 
   const promise = await contest.UsersId.map(async(user,i)=>{
     const URL = `https://codeforces.com/api/user.status?handle=${user}&from=1&count=1`;
@@ -229,7 +230,7 @@ const updateContest = async(roomId,contestIndex)=>{
     return;
   })
   await Promise.all(promise);
-  console.log(contests[contestIndex]);
+  return(contests[contestIndex]);
 }
 
 const checkIfProblemSolved = (user,unsolvedProblem,contestIndex,arr)=>{
@@ -238,28 +239,18 @@ const checkIfProblemSolved = (user,unsolvedProblem,contestIndex,arr)=>{
     if(check(unsolvedProblem,prob)){
         if(contests[contestIndex].userToProblem.has(prob.problem.name) &&
                 contests[contestIndex].userToProblem.get(prob.problem.name).time > prob.creationTimeSeconds ){
-
           contests[contestIndex].userToProblem.set(prob.problem.name,{time:prob.creationTimeSeconds,author:user})
         }else if(!contests[contestIndex].userToProblem.has(prob.problem.name)){
           contests[contestIndex].userToProblem.set(prob.problem.name,{time:prob.creationTimeSeconds,author:user})
         }else{
           console.log("eror")
         }
-    }else{
-      console.log("2nd error")
-    }
   })
 }
 
 const check = (unsolvedProblem,prob)=>{
-  if(prob.problem.name == unsolvedProblem && prob.verdict == "OK"){
-    console.log(prob.verdict)
-    return true;
-  }
-  else {
-    console.log(prob.verdict)
-    return false;
-  }
+  return(prob.problem.name.trim().toLowerCase() == unsolvedProblem.trim().toLowerCase()
+   && prob.verdict == "OK")
   // prob.creationTimeSeconds >= contests[contestIndex].StartTime &&
   // prob.creationTimeSeconds <= contests[contestIndex].EndTime
 }
