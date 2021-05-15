@@ -2,6 +2,7 @@ const axios = require("axios");
 
 const contests = []; //contains all contests
 
+
 const checkContest = (roomId, name, socketid) => {
   let contestExist = false;
   let existingContest = null;
@@ -54,17 +55,21 @@ const createContest = (roomId, name, socketid) => {
     Score:0,
     SocketId: socketid,
   };
+  const startDate = new Date();
+
   const lockout = {
     contestIndex : contests.length,
     Id: roomId,
     Users: [user],
     UsersId: [name],
-    EndTime: "2hrs",
+    EndTime: startDate.getTime() + 2*60*60*1000,
     Problems:[],
     Started: false,
     problemTags:[],
     minRating:0,
-    maxRating:0
+    maxRating:0,
+    StartTime:startDate.getTime(),
+    userToProblem:new Map()
   };
   contests.push(lockout);
   console.log("contest-created!");
@@ -205,10 +210,70 @@ function shuffleArray(array) {
     }
 }
 
+const updateContest = async(roomId,contestIndex)=>{
+  const contest = contests[contestIndex];
+  const unsolvedProblems = [];
+
+  contest.Problems.every((prob,i)=>{
+    if(!contest.userToProblem.has(prob.name)){
+      unsolvedProblems.push(prob.name);
+    }
+  });
+
+  const promise = await contest.UsersId.map(async(user,i)=>{
+    const URL = `https://codeforces.com/api/user.status?handle=${user}&from=1&count=1`;
+    const res = await axios.get(URL);
+    unsolvedProblems.map((prob,j)=>{
+       checkIfProblemSolved(user,prob,contestIndex,res.data.result);
+    })
+    return;
+  })
+  await Promise.all(promise);
+  console.log(contests[contestIndex]);
+}
+
+const checkIfProblemSolved = (user,unsolvedProblem,contestIndex,arr)=>{
+  // console.log(arr);
+  arr.every((prob,i)=>{
+    if(check(unsolvedProblem,prob)){
+        if(contests[contestIndex].userToProblem.has(prob.problem.name) &&
+                contests[contestIndex].userToProblem.get(prob.problem.name).time > prob.creationTimeSeconds ){
+
+          contests[contestIndex].userToProblem.set(prob.problem.name,{time:prob.creationTimeSeconds,author:user})
+        }else if(!contests[contestIndex].userToProblem.has(prob.problem.name)){
+          contests[contestIndex].userToProblem.set(prob.problem.name,{time:prob.creationTimeSeconds,author:user})
+        }else{
+          console.log("eror")
+        }
+    }else{
+      console.log("2nd error")
+    }
+  })
+}
+
+const check = (unsolvedProblem,prob)=>{
+  if(prob.problem.name == unsolvedProblem && prob.verdict == "OK"){
+    console.log(prob.verdict)
+    return true;
+  }
+  else {
+    console.log(prob.verdict)
+    return false;
+  }
+  // prob.creationTimeSeconds >= contests[contestIndex].StartTime &&
+  // prob.creationTimeSeconds <= contests[contestIndex].EndTime
+}
+
+const getContest=(roomId,contestIndex)=>{
+  return(contests[contestIndex]);
+}
+
 module.exports = {
   checkContest: checkContest,
   removeContestUser: removeContestUser,
   startContest:startContest,
   getTeamMembers:getTeamMembers,
-  createURL : createURL
+  createURL : createURL,
+  updateContest:updateContest,
+  getContest:getContest
 };

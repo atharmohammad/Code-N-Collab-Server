@@ -4,6 +4,8 @@ const {
   startContest,
   getTeamMembers,
   createURL,
+  updateContest,
+  getContest
 } = require("../utils/Contest");
 const axios = require("axios");
 
@@ -47,8 +49,9 @@ module.exports = function (io) {
           .catch((e) => console.log(e));
       }
     );
-    socket.on("Contest-Update",({roomId,contestIndex})=>{
-      const contest = updateContest(roomId,contestIndex);
+    socket.on("Contest-Update",async({roomId,contestIndex})=>{
+      const contest = await updateContest(roomId,contestIndex);
+      // io.to(roomId).emit("Update",({roomId:roomId,contestIndex:contestIndex}));
     });
     socket.on("Leave-Contest", (user) => {
       console.log("contest-Left");
