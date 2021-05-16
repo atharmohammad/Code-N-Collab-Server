@@ -305,9 +305,10 @@ function compare(a,b){
 
 const check = (unsolvedProblem,prob)=>{
   return(prob.problem.name.trim().toLowerCase() == unsolvedProblem.trim().toLowerCase()
-   && prob.verdict == "OK")
-  // prob.creationTimeSeconds >= contests[contestIndex].StartTime &&
-  // prob.creationTimeSeconds <= contests[contestIndex].EndTime
+   && prob.verdict == "OK" )
+  //  prob.creationTimeSeconds >= contests[contestIndex].StartTime
+  //  &&
+  // prob.creationTimeSeconds <= contests[contestIndex].EndTime)
 }
 
 const getContest=(roomId,contestIndex)=>{

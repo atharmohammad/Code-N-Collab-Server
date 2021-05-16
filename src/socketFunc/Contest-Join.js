@@ -27,6 +27,8 @@ module.exports = function (io) {
     socket.on(
       "Start-Contest",
       ({ room, problemTags, minRating, maxRating }) => {
+        socket.to(room).emit("Contest-Starting");
+        
         problemTags = problemTags.map((e, idx) => {
           return { key: idx, label: e };
         });
