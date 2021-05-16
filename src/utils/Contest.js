@@ -222,7 +222,7 @@ const updateContest = async(roomId,contestIndex)=>{
   console.log(unsolvedProblems);
 
   const promise = await contest.UsersId.map(async(user,i)=>{
-    const URL = `https://codeforces.com/api/user.status?handle=${user}&from=1&count=1`;
+    const URL = `https://codeforces.com/api/user.status?handle=${user}&from=1&count=10`;
     const res = await axios.get(URL);
     unsolvedProblems.map((prob,j)=>{
        checkIfProblemSolved(user,prob,contestIndex,res.data.result);
@@ -230,22 +230,67 @@ const updateContest = async(roomId,contestIndex)=>{
     return;
   })
   await Promise.all(promise);
+
+  updateScores(contestIndex);
+
   return(contests[contestIndex]);
 }
 
 const checkIfProblemSolved = (user,unsolvedProblem,contestIndex,arr)=>{
-  // console.log(arr);
   arr.every((prob,i)=>{
     if(check(unsolvedProblem,prob)){
         if(contests[contestIndex].userToProblem.has(prob.problem.name) &&
                 contests[contestIndex].userToProblem.get(prob.problem.name).time > prob.creationTimeSeconds ){
-          contests[contestIndex].userToProblem.set(prob.problem.name,{time:prob.creationTimeSeconds,author:user})
+          contests[contestIndex].userToProblem.set(prob.problem.name,
+            { time:prob.creationTimeSeconds,
+              author:user,
+              points:prob.problem.rating
+            })
         }else if(!contests[contestIndex].userToProblem.has(prob.problem.name)){
-          contests[contestIndex].userToProblem.set(prob.problem.name,{time:prob.creationTimeSeconds,author:user})
+          contests[contestIndex].userToProblem.set(prob.problem.name,
+            { time:prob.creationTimeSeconds,
+              author:user,
+              points:prob.problem.rating
+            })
         }else{
           console.log("eror")
         }
+    }
   })
+}
+
+const updateScores = (contestIndex)=>{
+
+  const score = new Map();
+  contests[contestIndex].userToProblem.forEach((values,keys) => {
+    if(score.has(values.author)){
+      const prevScore = score.get(values.author).points;
+      score.set(values.author,{points:prevScore + values.points})
+    }else{
+      score.set(values.author,{points:values.points})
+    }
+  });
+
+  contests[contestIndex].Users.forEach((user, i) => {
+    if(score.has(user.Name)){
+      contests[contestIndex].Users[i].Score = score.get(user.Name).points
+    }
+  });
+
+  contests[contestIndex].Users.sort(compare);
+
+}
+
+function compare(a,b){
+  if(a.Score === b.Score){
+    return 0
+  }
+  else if(a.Score > b.Score){
+    return -1
+  }
+  else{
+    return 1;
+  }
 }
 
 const check = (unsolvedProblem,prob)=>{
