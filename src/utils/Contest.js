@@ -156,7 +156,10 @@ const startContest = ({room,problemTags,
           key:i,
           link:link,
           name:problem.name,
-          points:problem.rating});
+          points:problem.rating,
+          solved:false,
+          author:null
+        });
         problemCount++;
         if(problemCount == 5)
           return false;
@@ -278,6 +281,13 @@ const updateScores = (contestIndex)=>{
   });
 
   contests[contestIndex].Users.sort(compare);
+
+  contests[contestIndex].Problems.map((problem,i)=>{
+    if(contests[contestIndex].userToProblem.has(problem.name)){
+      problem.solved = true;
+      problem.author = contests[contestIndex].userToProblem.get(problem.name).author
+    }
+  })
 
 }
 

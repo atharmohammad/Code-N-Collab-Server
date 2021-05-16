@@ -44,7 +44,6 @@ module.exports = function (io) {
             });
             const teamMembers = getTeamMembers(contest.UsersId);
             io.to(room).emit("Update", contest); //First update then send memebers
-            io.to(room).emit("peopleInRoom", teamMembers);
           })
           .catch((e) => console.log(e));
       }
