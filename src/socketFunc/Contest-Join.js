@@ -1,5 +1,4 @@
 const axios = require("axios");
-
 const {
   checkContest,
   removeContestUser,
@@ -7,8 +6,11 @@ const {
   getTeamMembers,
   createURL,
   updateContest,
-  getContest,
+  getContestLength,
+  deleteContests,
 } = require("../utils/Contest");
+
+let DeleteIntervalOn = false;
 
 module.exports = function (io) {
   io.on("connection", (socket) => {
@@ -18,6 +20,19 @@ module.exports = function (io) {
       if (obj.error) {
         return callback({ error: obj.error, contest: obj.contest });
       } else {
+        if (!DeleteIntervalOn) {
+          console.log("Starting Interval");
+          DeleteIntervalOn = true;
+          const interval = setInterval(() => {
+            console.log("deleting data.....");
+            deleteContests();
+            if (getContestLength() == 0) {
+              console.log("Stopping Interval");
+              DeleteIntervalOn = false;
+              clearInterval(interval);
+            }
+          }, 24 * 60 * 60 * 1000);
+        }
         socket.join(user.RoomId);
         console.log("contest-joined");
         callback({ error: obj.error, contest: obj.contest });
