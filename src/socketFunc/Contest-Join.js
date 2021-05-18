@@ -1,3 +1,5 @@
+const axios = require("axios");
+
 const {
   checkContest,
   removeContestUser,
@@ -7,7 +9,6 @@ const {
   updateContest,
   getContest,
 } = require("../utils/Contest");
-const axios = require("axios");
 
 module.exports = function (io) {
   io.on("connection", (socket) => {
@@ -28,7 +29,7 @@ module.exports = function (io) {
       "Start-Contest",
       ({ room, problemTags, minRating, maxRating }) => {
         socket.to(room).emit("Contest-Starting");
-
+        problemTags = problemTags.map((tag) => tag.label);
         const URL = createURL(problemTags);
         const problems = axios
           .get(URL)
