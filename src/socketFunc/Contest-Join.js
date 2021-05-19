@@ -1,3 +1,4 @@
+const axios = require("axios");
 const {
   checkContest,
   removeContestUser,
@@ -5,9 +6,11 @@ const {
   getTeamMembers,
   createURL,
   updateContest,
-  getContest
+  getContestLength,
+  deleteContests,
 } = require("../utils/Contest");
-const axios = require("axios");
+
+let DeleteIntervalOn = false;
 
 module.exports = function (io) {
   io.on("connection", (socket) => {
@@ -17,6 +20,19 @@ module.exports = function (io) {
       if (obj.error) {
         return callback({ error: obj.error, contest: obj.contest });
       } else {
+        if (!DeleteIntervalOn) {
+          console.log("Starting Interval");
+          DeleteIntervalOn = true;
+          const interval = setInterval(() => {
+            console.log("deleting data.....");
+            deleteContests();
+            if (getContestLength() == 0) {
+              console.log("Stopping Interval");
+              DeleteIntervalOn = false;
+              clearInterval(interval);
+            }
+          }, 24 * 60 * 60 * 1000);
+        }
         socket.join(user.RoomId);
         console.log("contest-joined");
         callback({ error: obj.error, contest: obj.contest });
@@ -28,10 +44,7 @@ module.exports = function (io) {
       "Start-Contest",
       ({ room, problemTags, minRating, maxRating }) => {
         socket.to(room).emit("Contest-Starting");
-        
-        problemTags = problemTags.map((e, idx) => {
-          return { key: idx, label: e };
-        });
+        problemTags = problemTags.map((tag) => tag.label);
         const URL = createURL(problemTags);
         const problems = axios
           .get(URL)
@@ -50,14 +63,14 @@ module.exports = function (io) {
           .catch((e) => console.log(e));
       }
     );
-    socket.on("Contest-Update",async({roomId,contestIndex})=>{
-      const contest = await updateContest(roomId,contestIndex);
-      console.log(contest)
-      io.to(roomId).emit("Update",contest);
+    socket.on("Contest-Update", async ({ roomId }) => {
+      const contest = await updateContest(roomId);
+      console.log(contest);
+      io.to(roomId).emit("Update", contest);
     });
     socket.on("Leave-Contest", (user) => {
       console.log("contest-Left");
-      const contest = removeContestUser({ contestIndex: user.contestIndex, name: user.name });
+      const contest = removeContestUser({ roomId, name: user.name });
       console.log(contest);
       const teamMembers = getTeamMembers(contest.UsersId);
       console.log(teamMembers);
