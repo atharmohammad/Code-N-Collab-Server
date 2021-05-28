@@ -14,12 +14,16 @@ const commentSchema = new mongoose.Schema({
     required:true,
     ref:'User'
   },
-  Like:{
-    type:mongoose.Schema.Types.ObjectId,
-    required:true,
-    ref:'Likes',
-    default:0
-  }
+  Likes:[{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'User',
+      required:true
+  }],
+  Replies:[{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'Reply',
+      required:true
+  }]
 },{
   timestamps:true
 });

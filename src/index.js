@@ -20,6 +20,8 @@ app.use(
 app.use(express.json());
 app.use("/user", userRouter);
 app.use("/blogs", blogRouter);
+app.use('/reply',replyRouter);
+app.use('/comment',commentRouter);
 
 const io = socketIo(server, {
   cors: {

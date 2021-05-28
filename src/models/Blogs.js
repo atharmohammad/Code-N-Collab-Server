@@ -11,16 +11,16 @@ const blogSchema = new mongoose.Schema({
     required:true,
     ref:'User'
   },
-  Like:{
-    type:mongoose.Schema.Types.ObjectId,
-    required:true,
-    ref:"Likes",
-    default:0,
-  },
-  Comment:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"Comment"
-  },
+  Likes:[{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'User',
+      required:true
+  }],
+  Comments:[{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"Comment",
+      required:true
+  }],
 },{
   timestamps:true
 });
