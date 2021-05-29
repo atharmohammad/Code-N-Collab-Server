@@ -14,11 +14,11 @@ const checkContest = (roomId, name, socketid) => {
 
   if (!contest) {
     return createContest(roomId, name, socketid);
-  } else if (usersCnt == 4 && !user) {
-    return { error: "Room is Full", contest: null };
   } else if (contest.Started && !user) {
     return { error: "Contest has Already Started !", contest: null };
-  } else if (usersCnt < 4 || user) {
+  } else if (usersCnt == 4 && !user) {
+    return { error: "Room is Full", contest: null };
+  }  else if (usersCnt < 4 || user) {
     return joinContest(roomId, name, socketid, contest);
   } else {
     return {
@@ -53,46 +53,46 @@ const createContest = (roomId, name, socketid) => {
   return { error: null, contest: lockout };
 };
 
-const joinContest = (roomId, name, socketid, contest) => {
-  const userIndex = contest.UsersId.findIndex((user, i) => user === name);
-  const contestIndex = contests.findIndex((con, index) => con.Id === roomId);
+const joinContest = (roomId, name, socketid, co) => {
+  const contest = contests.find((con, index) => con.Id === roomId);
+  const user = contest.UsersId.find((user, i) => user === name);
 
-  if (contestIndex == -1) {
+  if (!contest) {
     return;
   }
 
-  if (userIndex != -1) {
+  if (user) {
     //Change the socket id of the user that joined again!
     console.log("contest already joined");
-    contests[contestIndex].Users[userIndex].SocketId = socketid;
-    return { error: null, contest: contests[contestIndex] };
+    user.SocketId = socketid;
+    return { error: null, contest: contest };
   }
 
-  const user = {
+  const newUser = {
     Name: name,
     Score: 0,
     SocketId: socketid,
   };
 
-  contests[contestIndex].UsersId.push(name);
-  contests[contestIndex].Users.push(user);
+  contest.UsersId.push(name);
+  contest.Users.push(newUser);
 
   console.log("Joined the existing contest");
-  return { error: null, contest: contests[contestIndex] };
+  return { error: null, contest: contest};
 };
 
 const removeContestUser = ({ roomId, name }) => {
-  const contestIndex = contests.findIndex((con, index) => con.Id === roomId);
+  const contest = contests.find((con, index) => con.Id === roomId);
 
-  if (contestIndex == -1) {
+  if (!contest) {
     return;
   }
 
-  const UserIds = contests[contestIndex].UsersId;
+  const UserIds = contest.UsersId;
   const users = UserIds.filter((id, i) => id !== name);
-  contests[contestIndex].UsersId = users;
+  contest.UsersId = users;
 
-  return contests[contestIndex];
+  return contest;
 };
 
 const startContest = ({
@@ -134,23 +134,17 @@ const startContest = ({
   const curr_time = new Date();
   ////********/////////
   /////Setting up the contest////
-  contests.every((cont, ind) => {
-    if (cont.Id === room) {
-      contestIndex = ind;
-      contests[ind].Started = true; //Starting the contest
-      contests[ind].EndTime = curr_time.getTime() + 2 * 60 * 60 * 1000;
-      contests[ind].Problems = problems;
-      contests[ind].problemTags = problemTags;
-      contests[ind].minRating = minRating;
-      contests[ind].maxRating = maxRating;
-      return false;
-    }
-    return true;
-  });
+  const contest = contests.find((cont,ind) => cont.Id === room);
+  contest.Started = true; //Starting the contest
+  contest.EndTime = curr_time.getTime() + 2 * 60 * 60 * 1000;
+  contest.Problems = problems;
+  contest.problemTags = problemTags;
+  contest.minRating = minRating;
+  contest.maxRating = maxRating;
   /////***///////////
 
-  console.log(contests[contestIndex]);
-  return contests[contestIndex];
+  console.log(contest);
+  return contest;
 };
 
 const getTeamMembers = (userIds) => {
@@ -169,13 +163,11 @@ const createURL = (problemTags) => {
 };
 
 const updateContest = async (roomId) => {
-  const contestIndex = contests.findIndex((con, index) => con.Id === roomId);
-
-  if (contestIndex == -1) {
+  const contest = contests.find((con, index) => con.Id === roomId);
+  if (!contest) {
     return;
   }
 
-  const contest = contests[contestIndex];
   const unsolvedProblems = [];
 
   contest.Problems.forEach((prob, i) => {
@@ -188,10 +180,15 @@ const updateContest = async (roomId) => {
 
   const promise = await contest.UsersId.map(async (user, i) => {
     const URL = `https://codeforces.com/api/user.status?handle=${user}&from=1&count=10`;
-    const res = await axios.get(URL);
-    unsolvedProblems.map((prob, j) => {
+    try{
+      const res = await axios.get(URL);
+      unsolvedProblems.map((prob, j) => {
       checkIfProblemSolved(user, prob, roomId, res.data.result);
-    });
+      });
+      console.log('fullfilled')
+    }catch(e){
+      console.log('rejected');
+    }
     return;
   });
   try {
@@ -200,30 +197,30 @@ const updateContest = async (roomId) => {
   } catch (e) {
     console.log("no such user");
   }
-  return contests[contestIndex];
+  return contest;
 };
 
 const checkIfProblemSolved = (user, unsolvedProblem, roomId, arr) => {
-  const contestIndex = contests.findIndex((con, index) => con.Id === roomId);
+  const contest = contests.find((con, index) => con.Id === roomId);
 
-  if (contestIndex === -1) {
+  if (!contest) {
     return;
   }
 
   arr.every((prob, i) => {
     if (check(unsolvedProblem, prob)) {
       if (
-        contests[contestIndex].userToProblem.has(prob.problem.name) &&
-        contests[contestIndex].userToProblem.get(prob.problem.name).time >
+        contest.userToProblem.has(prob.problem.name) &&
+        contest.userToProblem.get(prob.problem.name).time >
           prob.creationTimeSeconds
       ) {
-        contests[contestIndex].userToProblem.set(prob.problem.name, {
+        contest.userToProblem.set(prob.problem.name, {
           time: prob.creationTimeSeconds,
           author: user,
           points: prob.problem.rating,
         });
-      } else if (!contests[contestIndex].userToProblem.has(prob.problem.name)) {
-        contests[contestIndex].userToProblem.set(prob.problem.name, {
+      } else if (!contest.userToProblem.has(prob.problem.name)) {
+        contest.userToProblem.set(prob.problem.name, {
           time: prob.creationTimeSeconds,
           author: user,
           points: prob.problem.rating,
@@ -236,14 +233,14 @@ const checkIfProblemSolved = (user, unsolvedProblem, roomId, arr) => {
 };
 
 const updateScores = (roomId) => {
-  const contestIndex = contests.findIndex((con, index) => con.Id === roomId);
+  const contest = contests.find((con, index) => con.Id === roomId);
 
-  if (contestIndex === -1) {
+  if (!contest) {
     return;
   }
 
   const score = new Map();
-  contests[contestIndex].userToProblem.forEach((values, keys) => {
+  contest.userToProblem.forEach((values, keys) => {
     if (score.has(values.author)) {
       const prevScore = score.get(values.author).points;
       score.set(values.author, { points: prevScore + values.points });
@@ -252,18 +249,18 @@ const updateScores = (roomId) => {
     }
   });
 
-  contests[contestIndex].Users.forEach((user, i) => {
+  contest.Users.forEach((user, i) => {
     if (score.has(user.Name)) {
-      contests[contestIndex].Users[i].Score = score.get(user.Name).points;
+      contest.Users[i].Score = score.get(user.Name).points;
     }
   });
 
-  contests[contestIndex].Users.sort((a, b) => a.Score - b.Score);
+  contest.Users.sort((a, b) => a.Score - b.Score);
 
-  contests[contestIndex].Problems.map((problem, i) => {
-    if (contests[contestIndex].userToProblem.has(problem.name)) {
+  contest.Problems.map((problem, i) => {
+    if (contest.userToProblem.has(problem.name)) {
       problem.solved = true;
-      problem.author = contests[contestIndex].userToProblem.get(
+      problem.author = contest.userToProblem.get(
         problem.name
       ).author;
     }
@@ -300,9 +297,12 @@ const getContestLength = () => {
 const deleteContests = () => {
   const curr_time = new Date().getTime();
   const deleteBeforeTime = curr_time - 24 * 60 * 60 * 1000;
-  contests = contests.filter(
-    (contest, i) => contest.StartTime > deleteBeforeTime
-  );
+  let temp = [];
+  for(let i=0;i<contests.length;i++){
+     if(contest[i].StartTime > deleteBeforeTime)
+       temp.push(contests[i]); 
+  }
+  contests = temp;
 };
 
 module.exports = {
