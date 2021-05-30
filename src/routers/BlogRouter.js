@@ -26,7 +26,7 @@ router.post('/write',auth,async(req,res)=>{
   }
 })
 
-router.delete('/delete/:id',async(req,res)=>{
+router.delete('/delete/:id',auth,async(req,res)=>{
   try{
     const _id = req.params.id;
     const blog = await Blog.findOneAndDelete({_id});
@@ -36,6 +36,34 @@ router.delete('/delete/:id',async(req,res)=>{
     res.status(200).send(blog)
   }catch(e){
     return res.status(400).send(e);
+  }
+})
+
+router.get('/currentBlog/:id',async(req,res)=>{
+  try{
+    const id = req.params.id;
+    const blog = await Blog.findOne({_id:id});
+    if(!blog)
+      res.status(404).send();
+
+    res.status(200).send(blog);
+  }catch(e){
+    return res.status(400).send(e);
+  }
+})
+
+router.patch('/currBlog/:id',auth,async(req,res)=>{
+  try{
+    const id = req.params.id;
+    const blog = await Blog.findOne({_id:id});
+    if(!blog)
+      res.status(404).send();
+
+    blog.Body = req.body.Body;
+    await blog.save();
+    res.status(200).send();
+  }catch(e){
+    res.status(400).send();
   }
 })
 

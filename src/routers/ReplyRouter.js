@@ -2,7 +2,7 @@ const express = require("express");
 const router = new express.Router();
 
 const Reply = require("../models/Reply");
-const Comments = require(".../models/Comments");
+const Comments = require("../models/Comment");
 
 const auth = require("../middleware/Auth");
 
@@ -11,9 +11,9 @@ router.post("/newReply/:id",auth,async(req,res)=>{
     const reply = new Reply({
       Body:req.body.Body,
       User:req.user._id,
-      Comment:req.id
+      Comment:req.params.id
     });
-    const comment = await Comments.findOne({_id:req.id});
+    const comment = await Comments.findOne({_id:req.params.id});
     const newReply = await reply.save();
     comment.push(newReply._id);
     await comment.save();
@@ -25,7 +25,7 @@ router.post("/newReply/:id",auth,async(req,res)=>{
 
 router.get("/getReply/:id",async(req,res)=>{
   try{
-    const comment = await Comments.findOne({_id:req.id});
+    const comment = await Comments.findOne({_id:req.params.id});
     if(!comment)
       res.status(400).send();
 
@@ -45,7 +45,7 @@ router.get("/getReply/:id",async(req,res)=>{
 
 router.post("/likeReply/:id",auth,async(req,res)=>{
   try{
-    const reply = await Reply.findOne({_id:req.id});
+    const reply = await Reply.findOne({_id:req.params.id});
     reply.Likes.push(req.user._id);
     res.status(200).send();
   }catch(e){

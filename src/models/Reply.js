@@ -24,6 +24,6 @@ const replySchema = new mongoose.Schema({
 });
 
 
-const table = mongoose.model('Reply',blogSchema);
+const table = mongoose.model('Reply',replySchema);
 
 module.exports = table

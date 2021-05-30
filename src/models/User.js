@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
   Name:{
     type:String,
     trim:true,
-    required:true
+    required:true,
+    unique:true
   },
   Email:{
     type:String,
@@ -29,12 +30,14 @@ const userSchema = new mongoose.Schema({
     trim:true,
     required:true,
   },
-  tokens:[{
-    token:{
-      type:String,
-      required:true,
-    }
+  Blogs:[{
+    type:mongoose.Schema.Types.ObjectId,
+    required:true,
+    ref:"Blog"
   }],
+  token:{
+      type:String,
+  },
   Avatar:{
     type:Buffer
   }
@@ -48,7 +51,7 @@ userSchema.methods.toJSON = function(){
   const userObject = user.toObject();
 
   delete userObject.Password;
-  delete userObject.tokens;
+  delete userObject.token;
 
   return userObject;
 }
@@ -56,7 +59,7 @@ userSchema.methods.toJSON = function(){
 userSchema.methods.generateToken = async function(){
   const user = this;
   const token = jwt.sign({_id:user._id.toString()},"Random-Secret");
-  user.tokens = user.tokens.concat({token});
+  user.token = token;
   await user.save();
   return token;
 }

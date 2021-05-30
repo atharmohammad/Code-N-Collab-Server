@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const commentSchema = new mongoose.Schema({
   Body:{
     type:String,
+    required:true
   },
   Blog:{
     type:mongoose.Schema.Types.ObjectId,
@@ -29,6 +30,6 @@ const commentSchema = new mongoose.Schema({
 });
 
 
-const table = mongoose.model('Comment',blogSchema);
+const table = mongoose.model('Comment',commentSchema);
 
 module.exports = table

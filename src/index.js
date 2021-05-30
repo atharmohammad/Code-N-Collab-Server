@@ -6,6 +6,10 @@ const cors = require("cors");
 require("./db/mongoose");
 const userRouter = require("./routers/UserRouter");
 const blogRouter = require("./routers/BlogRouter");
+const replyRouter = require("./routers/ReplyRouter");
+const commentRouter = require("./routers/CommentRouter");
+
+
 //const KEY = require("../config");
 const app = express();
 const server = http.createServer(app);
