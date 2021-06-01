@@ -6,9 +6,10 @@ const User = require("../models/User");
 
 router.get('/Allblogs',async(req,res)=>{
   try{
-    const blogs = await Blog.find({}).populate({
+    const blogs = await Blog.find({Deleted:false}).populate({
       path:"User",
       select:"Name",
+      match:{Deleted:false},
       sort:{"createdAt":"desc"}
     }).exec();
     res.status(200).send(blogs);
@@ -33,11 +34,14 @@ router.post('/write',auth,async(req,res)=>{
 router.delete('/delete/:id',auth,async(req,res)=>{
   try{
     const _id = req.params.id;
-    const blog = await Blog.findOneAndDelete({_id});
+    const blog = await Blog.findOne({_id:_id,Deleted:false});
     if(!blog)
-      res.status(404).send()
+      res.status(404).send();
 
-    res.status(200).send(blog)
+    blog.Deleted = true;
+    await blog.save();
+
+    res.status(200).send()
   }catch(e){
     return res.status(400).send(e);
   }
@@ -46,7 +50,7 @@ router.delete('/delete/:id',auth,async(req,res)=>{
 router.get('/currentBlog/:id',async(req,res)=>{
   try{
     const id = req.params.id;
-    const blog = await Blog.findOne({_id:id});
+    const blog = await Blog.findOne({_id:id,Deleted:false});
     if(!blog)
       res.status(404).send();
 
@@ -59,7 +63,7 @@ router.get('/currentBlog/:id',async(req,res)=>{
 router.patch('/currBlog/:id',auth,async(req,res)=>{
   try{
     const id = req.params.id;
-    const blog = await Blog.findOne({_id:id});
+    const blog = await Blog.findOne({_id:id,Deleted:false});
     if(!blog)
       res.status(404).send();
 

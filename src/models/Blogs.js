@@ -13,6 +13,10 @@ const blogSchema = new mongoose.Schema({
     required:true,
     ref:'User'
   },
+  Deleted:{
+    type:Boolean,
+    default:false
+  },
   Likes:[{
       type:mongoose.Schema.Types.ObjectId,
       ref:'User',
@@ -26,21 +30,6 @@ const blogSchema = new mongoose.Schema({
 },{
   timestamps:true
 });
-
-blogSchema.pre("remove",async function(req,res,next){
-  const blog = this;
-  const blogId = blod._id.trim().toString();
-
-  const user = await User.findOne({_id:req.user._id});
-  user.Blogs = user.Blogs.filter(curr=>curr.trim().toString() !== blogId);
-  await user.save();
-
-  await Comment.deleteMany({Blog:blogId});
-
-  next();
-
-})
-
 
 const table = mongoose.model('Blog',blogSchema);
 

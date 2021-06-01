@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
     type:String,
     trim:true,
   },
+  Deleted:{
+    type:Boolean,
+    default:false
+  },
   Blogs:[{
     type:mongoose.Schema.Types.ObjectId,
     required:true,
@@ -68,7 +72,7 @@ userSchema.methods.generateToken = async function(){
 }
 
 userSchema.statics.findByCredentials = async function(email,password){
-  const user = await this.model("User").findOne({Email:email});
+  const user = await this.model("User").findOne({Email:email,Deleted:false});
   if(!user)
     throw new Error("User does not exists");
 
