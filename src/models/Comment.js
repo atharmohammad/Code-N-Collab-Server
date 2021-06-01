@@ -29,6 +29,20 @@ const commentSchema = new mongoose.Schema({
   timestamps:true
 });
 
+commentSchema.pre("remove",async function(req,res,next){
+  const comment = this;
+  const commentId = comment._id.trim().toString();
+
+  const blog = Blog.findOne({_id:comment.Blog});
+  blog.Comments = blog.Comments.filter(curr=>curr.trim().toString() !== commentId);
+  await blog.save();
+
+  await Reply.deleteMany({Comment:commentId});
+
+  next();
+
+})
+
 
 const table = mongoose.model('Comment',commentSchema);
 

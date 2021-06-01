@@ -32,11 +32,10 @@ router.get("/Me",auth,async(req,res,next)=>{
     res.status(200).send(user);
   }catch(e){
     res.status(400).send();
-}
-
-
+  }
 
 })
+
 
 
 module.exports = router;

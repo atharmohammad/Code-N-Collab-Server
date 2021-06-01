@@ -66,6 +66,6 @@ router.post("/likeReply/:id",auth,async(req,res)=>{
   }catch(e){
     res.status(400).send();
   }
-})
+});
 
 module.exports = router
