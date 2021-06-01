@@ -7,7 +7,7 @@ const replySchema = new mongoose.Schema({
   User:{
     type:mongoose.Schema.Types.ObjectId,
     required:true,
-    ref:"Users"
+    ref:"User"
   },
   Comment:{
     type:mongoose.Schema.Types.ObjectId,

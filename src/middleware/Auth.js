@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 
 const auth = async(req,res,next)=>{
   try{
+    console.log(req.header);
     const token = req.header("Authorization").split(" ")[1];
     const decodedKey = jwt.verify(token,"Random-Secret");
 

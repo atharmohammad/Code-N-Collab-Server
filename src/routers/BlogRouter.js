@@ -2,6 +2,7 @@ const express = require('express');
 const router = new express.Router();
 const Blog = require('../models/Blogs');
 const auth = require("../middleware/Auth");
+const User = require("../models/User");
 
 router.get('/Allblogs',async(req,res)=>{
   try{
@@ -20,6 +21,9 @@ router.post('/write',auth,async(req,res)=>{
   try{
     const blog = new Blog({Body:req.body.Body,User:req.user._id});
     const newBlog = await blog.save();
+    const user = await User.findOne({_id:req.user._id});
+    user.Blogs.push(newBlog._id);
+    await user.save();
     res.status(200).send(newBlog);
   }catch(e){
     res.status(400).send(e);

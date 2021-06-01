@@ -7,21 +7,16 @@ const auth = require('../middleware/Auth');
 router.get("/getComments/:id",async(req,res)=>{
   const id = req.params.id;
   try{
-    const blog = await Blogs.findOne({_id:id});
+    const blogs = await Blogs.findOne({_id:id}).populate({
+      path:"Comments",
+      model:"Comment",
+      select:["User","Body","Likes","Replies"],
+      populate:{path:"User",select:"Name"}
+    }).exec()
 
-    if(!blog)
-      throw new Error();
-
-      const comments = blog.populate({
-        path:"Comments",
-        select:["Body","Likes","User"],
-        options:{
-          limit:parseInt(req.params.limit),
-        }
-      }).execPopulate();
-
-      res.status(200).send(comments);
+    res.status(200).send(blogs);
   }catch(e){
+    console.log(e)
     res.status(404).send();
   }
 });
@@ -29,12 +24,20 @@ router.get("/getComments/:id",async(req,res)=>{
 
 router.post("/createComment/:id",auth,async(req,res)=>{
   try{
+
+    const blog = await Blogs.findOne({_id:req.params.id});
+
+    if(!blog)
+      res.status(404).send();
+
     const comment = new Comments({
       Body:req.body.Body,
       User:req.user._id,
       Blog:req.params.id
     });
     const newComment = await comment.save();
+    blog.Comments.push(newComment._id);
+    await blog.save();
     res.status(200).send();
   }catch(e){
     res.status(400).send(e);
@@ -47,10 +50,34 @@ router.post("/likeRouter/:id",auth,async(req,res)=>{
     if(!comment)
       throw new Error();
 
-    comment.Likes.push(req.user._id);
-    await comment.save();
+    const like = comment.Likes.find((curr)=>{
+      return(curr.toString().trim() == req.user._id.toString().trim());
+    });
+    if(like){
+      const likeArray = comment.Likes.filter((curr)=>curr.toString().trim() != req.user._id.toString().trim());
+      comment.Likes = likeArray;
+    }else{
+      comment.Likes.push(req.user._id);
+    }
 
+    await comment.save();
     res.status(200).send(comment);
+  }catch(e){
+    console.log(e)
+    res.status(400).send();
+  }
+});
+
+router.patch("/updateComment/:id",async(req,res)=>{
+  const id = req.params.id;
+  try{
+    const comment = await Comments.findOne({_id:id});
+    if(!comment)
+      res.status(404).send();
+
+    comment.Body = req.Body;
+    await comment.save();
+    res.status(200).send();
   }catch(e){
     res.status(400).send();
   }

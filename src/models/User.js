@@ -28,7 +28,10 @@ const userSchema = new mongoose.Schema({
   CodeforcesHandle:{
     type:String,
     trim:true,
-    required:true,
+  },
+  Designation:{
+    type:String,
+    trim:true,
   },
   Blogs:[{
     type:mongoose.Schema.Types.ObjectId,

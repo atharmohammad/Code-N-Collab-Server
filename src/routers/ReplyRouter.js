@@ -31,10 +31,12 @@ router.get("/getReply/:id",async(req,res)=>{
 
     const replies = await comment.populate({
       path:"Replies",
+      model:"Reply",
+      populate:{path:"User",select:"Name"},
       options:{
         limit:parseInt(req.params.limit),
       }
-    }).execPopulate();
+    }).exec();
 
     res.status(200).send(replies);
 
@@ -46,8 +48,21 @@ router.get("/getReply/:id",async(req,res)=>{
 router.post("/likeReply/:id",auth,async(req,res)=>{
   try{
     const reply = await Reply.findOne({_id:req.params.id});
-    reply.Likes.push(req.user._id);
-    res.status(200).send();
+    if(!reply)
+      res.status(404).send();
+
+      const like = reply.Likes.find((curr)=>{
+        return(curr.toString().trim() == req.user._id.toString().trim());
+      });
+
+      if(like){
+        const likeArray = reply.Likes.filter((curr)=>curr.toString().trim() != req.user._id.toString().trim());
+        reply.Likes = likeArray;
+      }else{
+        reply.Likes.push(req.user._id);
+      }
+    const newReply = await reply.save();
+    res.status(200).send(newReply);
   }catch(e){
     res.status(400).send();
   }
