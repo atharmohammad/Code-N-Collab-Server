@@ -2,6 +2,9 @@ const express = require('express');
 const router = new express.Router();
 const User = require('../models/User');
 const auth = require("../middleware/Auth");
+const CryptoJS = require("crypto-js");
+const cryptoRandomString  = require("crypto-random-string");
+const sendMessage = require("../Function/Sender");
 
 router.post('/signup',async(req,res)=>{
   try{
@@ -10,8 +13,21 @@ router.post('/signup',async(req,res)=>{
       res.status(400).send("error : Password is either weak or empty");
       return;
     }
-      const user = new User(req.body);
+      const _token = cryptoRandomString({length: 128})
+
+      const user = new User({...req.body,VerificationToken:_token});
       const newUser = await user.save();
+
+      const data = {
+        _id:newUser._id.toString().trim(),
+        token:_token;
+      }
+
+      const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data),'Random-Secret').toString();
+      const verificationLink = `${process.env.BaseURI}?verify=${ciphertext}`;
+
+      await sendMessage(user.Email,verificationLink);
+
       res.status(200).send(newUser);
   }catch(e){
     res.status(400).send(e);

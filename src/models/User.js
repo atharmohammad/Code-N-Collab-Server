@@ -80,6 +80,9 @@ const userSchema = new mongoose.Schema({
   SuperUser:{
     type:Boolean,
     default:false
+  },
+  VerificationToken:{
+    type:String
   }
 },{
   timestamps:true

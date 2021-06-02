@@ -14,6 +14,8 @@
     "bcryptjs": "^2.4.3",
     "cheerio": "*",
     "cors": "^2.8.5",
+    "crypto-js": "^4.0.0",
+    "crypto-random-string": "^2.0.0",
     "express": "^4.17.1",
     "googleapis": "^74.2.0",
     "jsonwebtoken": "^8.5.1",
