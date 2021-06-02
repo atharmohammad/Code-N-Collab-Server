@@ -5,6 +5,11 @@ const auth = require("../middleware/Auth");
 
 router.post('/signup',async(req,res)=>{
   try{
+    const password = req.body.Password;
+    if(!password || password.toString().trim().length < 6){
+      res.status(400).send("error : Password is either weak or empty");
+      return;
+    }
       const user = new User(req.body);
       const newUser = await user.save();
       res.status(200).send(newUser);

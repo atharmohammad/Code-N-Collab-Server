@@ -8,7 +8,7 @@ const userRouter = require("./routers/UserRouter");
 const blogRouter = require("./routers/BlogRouter");
 const replyRouter = require("./routers/ReplyRouter");
 const commentRouter = require("./routers/CommentRouter");
-
+const oAuthRouter = require("./routers/Oauth");
 
 //const KEY = require("../config");
 const app = express();
@@ -23,6 +23,7 @@ app.use(
 
 app.use(express.json());
 app.use("/user", userRouter);
+app.use('/Oauth',oAuthRouter);
 app.use("/blogs", blogRouter);
 app.use('/reply',replyRouter);
 app.use('/comment',commentRouter);

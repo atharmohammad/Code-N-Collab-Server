@@ -8,13 +8,11 @@ const userSchema = new mongoose.Schema({
     type:String,
     trim:true,
     required:true,
-    unique:true
   },
   Email:{
     type:String,
     trim:true,
     unique:true,
-    required:true,
     validate:(value)=>{
       if(!validator.isEmail(value))
         throw new Error("Email is not valid !")
@@ -22,7 +20,6 @@ const userSchema = new mongoose.Schema({
   },
   Password:{
     type:String,
-    required:true,
     trim:true,
   },
   CodeforcesHandle:{
@@ -46,7 +43,43 @@ const userSchema = new mongoose.Schema({
       type:String,
   },
   Avatar:{
-    type:Buffer
+    type:String
+  },
+  Verified:{
+    type:Boolean,
+    default:false
+  },
+  Moto:{
+    type:String,
+    default:""
+  },
+  Country:{
+    type:String,
+    default:"",
+  },
+  Linkedin:{
+    type:String,
+    default:null
+  },
+  Github:{
+    type:String,
+    default:null
+  },
+  Codeforces:{
+    type:String,
+    default:null
+  },
+  Codechef:{
+    type:String,
+    default:null
+  },
+  AtCoder:{
+    type:String,
+    default:null
+  },
+  SuperUser:{
+    type:Boolean,
+    default:false
   }
 },{
   timestamps:true
