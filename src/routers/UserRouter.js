@@ -2,7 +2,7 @@ const express = require('express');
 const router = new express.Router();
 const User = require('../models/User');
 const auth = require("../middleware/Auth");
-const CryptoJS = require("crypto-js");
+const jwt = require("jsonwebtoken");
 const cryptoRandomString  = require("crypto-random-string");
 const sendMessage = require("../Function/Sender");
 
@@ -13,24 +13,50 @@ router.post('/signup',async(req,res)=>{
       res.status(400).send("error : Password is either weak or empty");
       return;
     }
-      const _token = cryptoRandomString({length: 128})
+      const _token = cryptoRandomString(128);
 
       const user = new User({...req.body,VerificationToken:_token});
       const newUser = await user.save();
 
       const data = {
         _id:newUser._id.toString().trim(),
-        token:_token;
+        token:_token
       }
 
-      const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(data),'Random-Secret').toString();
-      const verificationLink = `${process.env.BaseURI}?verify=${ciphertext}`;
+      const ciphertext = jwt.sign(data,'Random-Secret',{ expiresIn: '1h' });
+      const verificationLink = `${process.env.BaseURI}user/verify/${ciphertext}`;
 
       await sendMessage(user.Email,verificationLink);
 
       res.status(200).send(newUser);
   }catch(e){
+    console.log(e);
     res.status(400).send(e);
+  }
+});
+
+router.get("/verify/:token",async(req,res)=>{
+  const token = req.params.token;
+  try{
+      const decodedKey = jwt.verify(token,"Random-Secret");
+      const id = decodedKey._id;
+      const user = await User.findOne({_id:id,Deleted:false});
+      if(!user){
+        res.status(404).send({"error":"user does not exist"});
+      }
+
+      if(user.Verified){
+        res.status(400).send({"error":"User is already verified"});
+      }
+
+      if(user.VerificationToken.token.String().trim() !== decodedKey.token.toString().trim()){
+        res.status(400).send({"error":"there might be a problem ! Please Click resend to recieve a verification link !"});
+      }
+
+      res.status(200).send({"success":"Email has been verified!"})
+
+  }catch(e){
+    res.status(400).send({"error":"Please click on resend button to recieve a verification link!"})
   }
 })
 
