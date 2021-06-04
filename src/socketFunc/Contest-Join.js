@@ -49,6 +49,7 @@ module.exports = function (io) {
         const problems = axios
           .get(URL)
           .then((res) => {
+            console.log(res);
             const problemArray = res.data.result.problems.slice(0);
             const contest = startContest({
               room,

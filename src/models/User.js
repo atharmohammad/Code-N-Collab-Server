@@ -7,13 +7,12 @@ const userSchema = new mongoose.Schema({
   Name:{
     type:String,
     trim:true,
-    required:true
+    required:true,
   },
   Email:{
     type:String,
     trim:true,
     unique:true,
-    required:true,
     validate:(value)=>{
       if(!validator.isEmail(value))
         throw new Error("Email is not valid !")
@@ -21,23 +20,67 @@ const userSchema = new mongoose.Schema({
   },
   Password:{
     type:String,
-    required:true,
     trim:true,
   },
   CodeforcesHandle:{
     type:String,
     trim:true,
-    required:true,
   },
-  tokens:[{
-    token:{
-      type:String,
-      required:true,
-    }
+  Designation:{
+    type:String,
+    trim:true,
+  },
+  Deleted:{
+    type:Boolean,
+    default:false
+  },
+  Blogs:[{
+    type:mongoose.Schema.Types.ObjectId,
+    required:true,
+    ref:"Blog"
   }],
+  token:{
+      type:String,
+  },
   Avatar:{
-    type:Buffer
-  }
+    type:String
+  },
+  Verified:{
+    type:Boolean,
+    default:false
+  },
+  Moto:{
+    type:String,
+    default:""
+  },
+  Country:{
+    type:String,
+    default:"",
+  },
+  Linkedin:{
+    type:String,
+    default:null
+  },
+  Github:{
+    type:String,
+    default:null
+  },
+  Codeforces:{
+    type:String,
+    default:null
+  },
+  Codechef:{
+    type:String,
+    default:null
+  },
+  AtCoder:{
+    type:String,
+    default:null
+  },
+  SuperUser:{
+    type:Boolean,
+    default:false
+  },
 },{
   timestamps:true
 });
@@ -48,21 +91,24 @@ userSchema.methods.toJSON = function(){
   const userObject = user.toObject();
 
   delete userObject.Password;
-  delete userObject.tokens;
-
+  delete userObject.token;
+  delete userObject.Blogs;
+  delete userObject.Verified;
+  delete userObject.Deleted;
+  
   return userObject;
 }
 
 userSchema.methods.generateToken = async function(){
   const user = this;
   const token = jwt.sign({_id:user._id.toString()},"Random-Secret");
-  user.tokens = user.tokens.concat({token});
+  user.token = token;
   await user.save();
   return token;
 }
 
 userSchema.statics.findByCredentials = async function(email,password){
-  const user = await this.model("User").findOne({Email:email});
+  const user = await this.model("User").findOne({Email:email,Deleted:false});
   if(!user)
     throw new Error("User does not exists");
 
@@ -81,11 +127,6 @@ userSchema.pre('save',async function(next){
   }
   next();
 })
-
-// userSchema.pre("remove",async function(){
-//
-// })
-
 
 const table = mongoose.model('User',userSchema);
 

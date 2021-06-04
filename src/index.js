@@ -6,6 +6,10 @@ const cors = require("cors");
 require("./db/mongoose");
 const userRouter = require("./routers/UserRouter");
 const blogRouter = require("./routers/BlogRouter");
+const replyRouter = require("./routers/ReplyRouter");
+const commentRouter = require("./routers/CommentRouter");
+const oAuthRouter = require("./routers/OauthRouter");
+
 //const KEY = require("../config");
 const app = express();
 const server = http.createServer(app);
@@ -19,7 +23,10 @@ app.use(
 
 app.use(express.json());
 app.use("/user", userRouter);
+app.use('/Oauth',oAuthRouter);
 app.use("/blogs", blogRouter);
+app.use('/reply',replyRouter);
+app.use('/comment',commentRouter);
 
 const io = socketIo(server, {
   cors: {
