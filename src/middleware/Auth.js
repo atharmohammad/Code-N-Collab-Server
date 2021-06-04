@@ -10,13 +10,8 @@ const auth = async(req,res,next)=>{
 
     const user = await Users.findOne({_id:decodedKey._id,
                               token:token,Deleted:false});
-
     if(!user)
       throw new Error();
-
-    if(!user.Verified){
-      res.status(401).send({"error":"Please verify your email account !"});
-    }
 
     req.token = token;
     req.user = user;

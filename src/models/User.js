@@ -81,9 +81,6 @@ const userSchema = new mongoose.Schema({
     type:Boolean,
     default:false
   },
-  VerificationToken:{
-    type:String
-  }
 },{
   timestamps:true
 });
@@ -95,7 +92,10 @@ userSchema.methods.toJSON = function(){
 
   delete userObject.Password;
   delete userObject.token;
-
+  delete userObject.Blogs;
+  delete userObject.Verified;
+  delete userObject.Deleted;
+  
   return userObject;
 }
 
@@ -127,11 +127,6 @@ userSchema.pre('save',async function(next){
   }
   next();
 })
-
-// userSchema.pre("remove",async function(){
-//
-// })
-
 
 const table = mongoose.model('User',userSchema);
 

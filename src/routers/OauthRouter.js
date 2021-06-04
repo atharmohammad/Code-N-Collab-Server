@@ -14,24 +14,30 @@ global.oauth2Client = new google.auth.OAuth2(
 router.get("/googleOauth",async(req,res)=>{
   try{
     const authUrl = getAuthUrl();
-    res.redirect(authUrl);
+    res.status(200).send(authUrl)
   }catch(e){
+    console.log(e);
     res.status(400).send();
   }
 
 });
 
-router.get("/authenticated",async(req,res)=>{
-  if(!req.query.code){
+router.post("/authenticated",async(req,res)=>{
+  const code = req.body.code;
+  console.log(req.body)
+  if(!code){
    return res.status(400).send({"error":"There is a problem ! Please try again later"});
  }
 
  try{
-   const code = req.query.code;
    const { tokens } = await oauth2Client.getToken(code);
    const user = await getGoogleUser(tokens);
-   const isUser = await User.findOne({Email:user.email,Deleted:false,Verified:true});
+   const isUser = await User.findOne({Email:user.email,Verified:true});
    if(isUser){
+     if(isUser.Deleted){
+       isUser.Deleted = false;
+       await isUser.save();
+     }
      const token = await isUser.generateToken();
      return res.status(200).send({user:isUser,token:token});
    }
