@@ -38,7 +38,7 @@ router.delete('/delete/:id',auth,async(req,res)=>{
     if(!blog)
       return res.status(404).send();
 
-    if(blog.User != req.user._id){
+    if(blog.User.toString().trim() != req.user._id.toString().trim()){
       return res.status(401).send();
     }
 
