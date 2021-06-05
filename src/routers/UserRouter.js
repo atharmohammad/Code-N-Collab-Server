@@ -40,7 +40,7 @@ router.patch("/updateProfile",auth,async(req,res)=>{
   const requiredUpdate = ['Name','CodeforcesHandle',
                           "Designation","Password","Avatar","Moto",
                           "Country","Linkedin","Github","Codeforces",
-                          "Codechef","AtCoder",];
+                          "Codechef","AtCoder","Institution"];
   const allUpdates = updates.every(update=>requiredUpdate.includes(update))
   if(!allUpdates){
     console.log(updates)
