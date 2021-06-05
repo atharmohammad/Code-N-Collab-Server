@@ -43,6 +43,7 @@ router.patch("/updateProfile",auth,async(req,res)=>{
                           "Codechef","AtCoder",];
   const allUpdates = updates.every(update=>requiredUpdate.includes(update))
   if(!allUpdates){
+    console.log(updates)
     return res.status(400).send({error:"Invalid updates!"});
   }
   try{

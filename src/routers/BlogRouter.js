@@ -54,7 +54,11 @@ router.delete('/delete/:id',auth,async(req,res)=>{
 router.get('/currentBlog/:id',async(req,res)=>{
   try{
     const id = req.params.id;
-    const blog = await Blog.findOne({_id:id,Deleted:false});
+    const blog = await Blog.findOne({_id:id,Deleted:false}).populate({
+      path:"User",
+      select:["Name","Designation"],
+      match:{Deleted:false},
+    });
     if(!blog)
       res.status(404).send();
 
