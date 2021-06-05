@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
   CodeforcesHandle:{
     type:String,
     trim:true,
+    default:null
   },
   Designation:{
     type:String,
@@ -95,7 +96,7 @@ userSchema.methods.toJSON = function(){
   delete userObject.Blogs;
   delete userObject.Verified;
   delete userObject.Deleted;
-  
+
   return userObject;
 }
 

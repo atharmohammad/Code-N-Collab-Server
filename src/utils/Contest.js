@@ -54,17 +54,23 @@ const createContest = (roomId, name, socketid) => {
 };
 
 const joinContest = (roomId, name, socketid, co) => {
+
   const contest = contests.find((con, index) => con.Id === roomId);
-  const user = contest.UsersId.find((user, i) => user === name);
+  const user = contest.Users.find((user, i) => user.Name === name);
+  const userId = contest.UsersId.find((user,i) => user === name );
 
   if (!contest) {
     return;
   }
 
-  if (user) {
-    //Change the socket id of the user that joined again!
-    console.log("contest already joined");
+  if(user && userId){
+
     user.SocketId = socketid;
+    return { error: null, contest: contest };
+
+  }else if(user){
+    user.SocketId = socketid;
+    contest.UsersId.push(name);
     return { error: null, contest: contest };
   }
 
@@ -91,7 +97,7 @@ const removeContestUser = ({ roomId, name }) => {
   const UserIds = contest.UsersId;
   const users = UserIds.filter((id, i) => id !== name);
   contest.UsersId = users;
-
+  console.log(contest,"removed user");
   return contest;
 };
 
@@ -300,7 +306,7 @@ const deleteContests = () => {
   let temp = [];
   for(let i=0;i<contests.length;i++){
      if(contest[i].StartTime > deleteBeforeTime)
-       temp.push(contests[i]); 
+       temp.push(contests[i]);
   }
   contests = temp;
 };

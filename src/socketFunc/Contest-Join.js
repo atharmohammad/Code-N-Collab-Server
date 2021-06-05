@@ -71,7 +71,7 @@ module.exports = function (io) {
     });
     socket.on("Leave-Contest", (user) => {
       console.log("contest-Left");
-      const contest = removeContestUser({ roomId, name: user.name });
+      const contest = removeContestUser({ roomId: user.roomId, name: user.name });
       console.log(contest);
       const teamMembers = getTeamMembers(contest.UsersId);
       console.log(teamMembers);

@@ -94,7 +94,11 @@ router.delete("/deleteComment/:id",auth,async(req,res)=>{
   try{
     const comment = await Comments.findOne({_id:id,Deleted:false});
     if(!comment)
-      res.status(404).send();
+      return res.status(404).send();
+
+    if(comment.User.toString().trim() !== req.user._id.toString().trim()){
+      return res.status(401).send();
+    }
 
     comment.Deleted = true;
     await comment.save();
