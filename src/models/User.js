@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema({
     type:String,
     default:""
   },
+  Institution:{
+    type:String,
+    default:null
+  },
   Country:{
     type:String,
     default:"",

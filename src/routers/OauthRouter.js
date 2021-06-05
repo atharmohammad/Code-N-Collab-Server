@@ -38,7 +38,7 @@ router.post("/authenticated",async(req,res)=>{
        await isUser.save();
      }
      const token = await isUser.generateToken();
-     return res.status(200).send({user:isUser,token:token});
+     return res.status(200).send({user:isUser,token:token,Way:"login"});
    }
   const newUser = new User({
     Name:user.name,
@@ -49,7 +49,7 @@ router.post("/authenticated",async(req,res)=>{
   const _Guser = await newUser.save();
   const token = await _Guser.generateToken();
 
-  return res.status(200).send({user:_Guser,token:token});
+  return res.status(200).send({user:_Guser,token:token,Way:"signup"});
  }catch(e){
    res.status(400).send()
  }
