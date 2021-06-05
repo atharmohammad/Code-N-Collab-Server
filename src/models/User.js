@@ -44,7 +44,8 @@ const userSchema = new mongoose.Schema({
       type:String,
   },
   Avatar:{
-    type:String
+    type:String,
+    default:'amongus1'
   },
   Verified:{
     type:Boolean,

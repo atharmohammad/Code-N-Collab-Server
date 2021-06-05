@@ -77,8 +77,13 @@ router.patch("/updateComment/:id",auth,async(req,res)=>{
   const id = req.params.id;
   try{
     const comment = await Comments.findOne({_id:id,Deleted:false});
-    if(!comment)
-      res.status(404).send();
+    if(!comment){
+      return res.status(404).send();
+    }
+
+    if(comment.User.toString().trim() !== req.user_id.toString().trim()){
+      return res.status(401).send();
+    }
 
     comment.Body = req.Body;
     await comment.save();

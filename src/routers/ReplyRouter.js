@@ -78,7 +78,11 @@ router.delete("/deleteReply/:id",auth,async(req,res)=>{
   try{
     const reply = await Reply.findOne({_id:id,Deleted:false});
     if(!reply)
-      res.status(404).send();
+      return res.status(404).send();
+
+    if(reply.User.toString().trim() !== req.user._id.toString().trim()){
+      return res.status(401).send();
+    }
 
     reply.Deleted = true;
     await reply.save();
@@ -95,7 +99,11 @@ router.patch("/updateReply/:id",auth,async(req,res)=>{
     const reply = Reply.findOne({_id:id,Deleted:false});
 
     if(!reply){
-      res.status(404).send();
+      return res.status(404).send();
+    }
+
+    if(reply.User.toString().trim() !== req.user._id.toString().trim()){
+      return res.status(401).send();
     }
 
     reply.Body = req.body.Body;
