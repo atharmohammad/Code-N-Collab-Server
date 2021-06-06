@@ -30,98 +30,99 @@ module.exports = function (io) {
         Please input correct url !<br/> Make sure Url is from following websites : geeksforgeeks , codeforces , codechef , atcoder,cses
         </div>`;
       }
-      console.log(problem);
       io.to(user.room).emit("problem", problem);
     });
   });
 };
 
 async function codeforces(URL) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.goto(URL);
-  const text = await page.evaluate(async function () {
-    try {
+  try{
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(URL);
+      const text = await page.evaluate(async function () {
       return document.querySelector(
         `#pageContent > div.problemindexholder > div.ttypography`
       ).outerHTML;
-    } catch (e) {
-      return "";
-    }
-  });
-  await browser.close();
-
-  return text;
+    });
+      await browser.close();
+      return text;
+  }catch(e){
+    return null
+  }
 }
 
 async function codechef(URL) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.goto(URL);
-  const text = await page.evaluate(function () {
     try {
+      const browser = await puppeteer.launch({ headless: true });
+      const page = await browser.newPage();
+      await page.goto(URL);
+      const text = await page.evaluate(function () {
       return document.querySelector(
         "#content-regions > section.content-area.small-8.columns.pl0"
       ).outerHTML;
-    } catch (e) {
-      return "";
-    }
-  });
-  await browser.close();
+      });
+      await browser.close();
 
-  return text;
+      return text;
+    }catch (e) {
+      return null;
+    }
 }
 
 async function geeksforgeeks(URL) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.goto(URL);
-  const text = await page.evaluate(function () {
-    try {
+
+  try{
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(URL);
+    const text = await page.evaluate(function () {
       return document.querySelector(
         "#problems > div.problem-statement"
       ).outerHTML;
-    } catch (e) {
-      return "";
-    }
-  });
-  await browser.close();
+    });
+    await browser.close();
+    return text;
+  }catch{
+    return null;
+  }
 
-  return text;
 }
 
 async function atcoder(URL) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.goto(URL);
-  const text = await page.evaluate(function () {
-    try {
+
+  try{
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(URL);
+    const text = await page.evaluate(function () {
       return document.querySelector(
         "#task-statement > span > span.lang-en"
       ).outerHTML;
-    } catch (e) {
-      return "";
-    }
-  });
-  await browser.close();
-
-  return text;
+    });
+    await browser.close();
+    return text;
+  }catch(e){
+    return null;
+  }
 }
 
 async function cses(URL) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.goto(URL);
-  const text = await page.evaluate(function () {
-    try {
+
+  try{
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(URL);
+    const text = await page.evaluate(function () {
       return document.querySelector(
         "body > div.skeleton > div.content-wrapper > div.content"
       ).outerHTML;
-    } catch (e) {
-      return "";
-    }
-  });
-  await browser.close();
+    });
+    await browser.close();
 
-  return text;
+    return text;
+  }catch(e){
+    return null;
+  }
+
 }
