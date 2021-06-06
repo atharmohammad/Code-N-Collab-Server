@@ -69,5 +69,16 @@ router.delete("/deleteUser",auth,async(req,res)=>{
 
 })
 
+router.get("/logout",auth,async(req,res)=>{
+  try{
+    req.user.token = null;
+    req.token = null;
+    await req.user.save();
+    res.status(200).send();
+  }catch(e){
+    res.status(400).send();
+  }
+})
+
 
 module.exports = router;
