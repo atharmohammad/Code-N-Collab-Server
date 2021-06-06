@@ -12,7 +12,7 @@ router.get("/getComments/:id",async(req,res)=>{
       model:"Comment",
       select:["User","Body","Likes","Replies"],
       match:{Deleted:false},
-      populate:{path:"User",select:"Name"}
+      populate:{path:"User",select:["Name","Designation","Avatar","Institution"]}
     }).exec();
 
     if(!blogs){
@@ -41,7 +41,7 @@ router.post("/createComment/:id",auth,async(req,res)=>{
       User:req.user._id,
       Blog:req.params.id
     });
-    
+
     const newComment = await comment.save();
     blog.Comments.push(newComment._id);
     await blog.save();

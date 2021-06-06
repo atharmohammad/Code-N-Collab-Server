@@ -17,8 +17,9 @@ router.get("/Me",auth,async(req,res,next)=>{
 
 });
 
-router.get("userProfile/:id",async(req,res)=>{
+router.get("/userProfile/:id",async(req,res)=>{
   const id = req.params.id;
+  console.log(id);
   try{
       const user = await User.findOne({_id:id,Deleted:false});
       if(!user){
@@ -72,7 +73,6 @@ router.delete("/deleteUser",auth,async(req,res)=>{
 router.get("/logout",auth,async(req,res)=>{
   try{
     req.user.token = null;
-    req.token = null;
     await req.user.save();
     res.status(200).send();
   }catch(e){
