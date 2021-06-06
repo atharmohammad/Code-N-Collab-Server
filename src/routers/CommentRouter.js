@@ -32,14 +32,16 @@ router.post("/createComment/:id",auth,async(req,res)=>{
 
     const blog = await Blogs.findOne({_id:req.params.id});
 
-    if(!blog)
-      res.status(404).send();
+    if(!blog){
+      return res.status(404).send();
+    }
 
     const comment = new Comments({
       Body:req.body.Body,
       User:req.user._id,
       Blog:req.params.id
     });
+    
     const newComment = await comment.save();
     blog.Comments.push(newComment._id);
     await blog.save();

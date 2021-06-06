@@ -8,9 +8,8 @@ router.get('/Allblogs',async(req,res)=>{
   try{
     const blogs = await Blog.find({Deleted:false}).populate({
       path:"User",
-      select:"Name",
+      select:["Name","Designation","Avatar"],
       match:{Deleted:false},
-      sort:{"createdAt":"desc"}
     }).exec();
     res.status(200).send(blogs);
   }catch(e){
@@ -56,7 +55,7 @@ router.get('/currentBlog/:id',async(req,res)=>{
     const id = req.params.id;
     const blog = await Blog.findOne({_id:id,Deleted:false}).populate({
       path:"User",
-      select:["Name","Designation"],
+      select:["Name","Designation","Avatar"],
       match:{Deleted:false},
     });
     if(!blog)
