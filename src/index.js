@@ -23,10 +23,10 @@ app.use(
 
 app.use(express.json());
 app.use("/user", userRouter);
-app.use('/Oauth',oAuthRouter);
+app.use("/Oauth", oAuthRouter);
 app.use("/blogs", blogRouter);
-app.use('/reply',replyRouter);
-app.use('/comment',commentRouter);
+app.use("/reply", replyRouter);
+app.use("/comment", commentRouter);
 
 const io = socketIo(server, {
   cors: {

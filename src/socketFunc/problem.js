@@ -36,43 +36,42 @@ module.exports = function (io) {
 };
 
 async function codeforces(URL) {
-  try{
+  try {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(URL);
-      const text = await page.evaluate(async function () {
+    const text = await page.evaluate(async function () {
       return document.querySelector(
         `#pageContent > div.problemindexholder > div.ttypography`
       ).outerHTML;
     });
-      await browser.close();
-      return text;
-  }catch(e){
-    return null
+    await browser.close();
+    return text;
+  } catch (e) {
+    return null;
   }
 }
 
 async function codechef(URL) {
-    try {
-      const browser = await puppeteer.launch({ headless: true });
-      const page = await browser.newPage();
-      await page.goto(URL);
-      const text = await page.evaluate(function () {
+  try {
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.goto(URL);
+    const text = await page.evaluate(function () {
       return document.querySelector(
         "#content-regions > section.content-area.small-8.columns.pl0"
       ).outerHTML;
-      });
-      await browser.close();
+    });
+    await browser.close();
 
-      return text;
-    }catch (e) {
-      return null;
-    }
+    return text;
+  } catch (e) {
+    return null;
+  }
 }
 
 async function geeksforgeeks(URL) {
-
-  try{
+  try {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(URL);
@@ -83,15 +82,13 @@ async function geeksforgeeks(URL) {
     });
     await browser.close();
     return text;
-  }catch{
+  } catch {
     return null;
   }
-
 }
 
 async function atcoder(URL) {
-
-  try{
+  try {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(URL);
@@ -102,14 +99,13 @@ async function atcoder(URL) {
     });
     await browser.close();
     return text;
-  }catch(e){
+  } catch (e) {
     return null;
   }
 }
 
 async function cses(URL) {
-
-  try{
+  try {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(URL);
@@ -121,8 +117,7 @@ async function cses(URL) {
     await browser.close();
 
     return text;
-  }catch(e){
+  } catch (e) {
     return null;
   }
-
 }

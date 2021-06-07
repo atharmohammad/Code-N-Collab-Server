@@ -18,7 +18,7 @@ const checkContest = (roomId, name, socketid) => {
     return { error: "Contest has Already Started !", contest: null };
   } else if (usersCnt == 4 && !user) {
     return { error: "Room is Full", contest: null };
-  }  else if (usersCnt < 4 || user) {
+  } else if (usersCnt < 4 || user) {
     return joinContest(roomId, name, socketid, contest);
   } else {
     return {
@@ -54,21 +54,18 @@ const createContest = (roomId, name, socketid) => {
 };
 
 const joinContest = (roomId, name, socketid, co) => {
-
   const contest = contests.find((con, index) => con.Id === roomId);
   const user = contest.Users.find((user, i) => user.Name === name);
-  const userId = contest.UsersId.find((user,i) => user === name );
+  const userId = contest.UsersId.find((user, i) => user === name);
 
   if (!contest) {
     return;
   }
 
-  if(user && userId){
-
+  if (user && userId) {
     user.SocketId = socketid;
     return { error: null, contest: contest };
-
-  }else if(user){
+  } else if (user) {
     user.SocketId = socketid;
     contest.UsersId.push(name);
     return { error: null, contest: contest };
@@ -84,7 +81,7 @@ const joinContest = (roomId, name, socketid, co) => {
   contest.Users.push(newUser);
 
   console.log("Joined the existing contest");
-  return { error: null, contest: contest};
+  return { error: null, contest: contest };
 };
 
 const removeContestUser = ({ roomId, name }) => {
@@ -97,7 +94,7 @@ const removeContestUser = ({ roomId, name }) => {
   const UserIds = contest.UsersId;
   const users = UserIds.filter((id, i) => id !== name);
   contest.UsersId = users;
-  console.log(contest,"removed user");
+  console.log(contest, "removed user");
   return contest;
 };
 
@@ -140,7 +137,7 @@ const startContest = ({
   const curr_time = new Date();
   ////********/////////
   /////Setting up the contest////
-  const contest = contests.find((cont,ind) => cont.Id === room);
+  const contest = contests.find((cont, ind) => cont.Id === room);
   contest.Started = true; //Starting the contest
   contest.EndTime = curr_time.getTime() + 2 * 60 * 60 * 1000;
   contest.Problems = problems;
@@ -186,14 +183,14 @@ const updateContest = async (roomId) => {
 
   const promise = await contest.UsersId.map(async (user, i) => {
     const URL = `https://codeforces.com/api/user.status?handle=${user}&from=1&count=10`;
-    try{
+    try {
       const res = await axios.get(URL);
       unsolvedProblems.map((prob, j) => {
-      checkIfProblemSolved(user, prob, roomId, res.data.result);
+        checkIfProblemSolved(user, prob, roomId, res.data.result);
       });
-      console.log('fullfilled')
-    }catch(e){
-      console.log('rejected');
+      console.log("fullfilled");
+    } catch (e) {
+      console.log("rejected");
     }
     return;
   });
@@ -266,9 +263,7 @@ const updateScores = (roomId) => {
   contest.Problems.map((problem, i) => {
     if (contest.userToProblem.has(problem.name)) {
       problem.solved = true;
-      problem.author = contest.userToProblem.get(
-        problem.name
-      ).author;
+      problem.author = contest.userToProblem.get(problem.name).author;
     }
   });
 };
@@ -304,9 +299,8 @@ const deleteContests = () => {
   const curr_time = new Date().getTime();
   const deleteBeforeTime = curr_time - 24 * 60 * 60 * 1000;
   let temp = [];
-  for(let i=0;i<contests.length;i++){
-     if(contest[i].StartTime > deleteBeforeTime)
-       temp.push(contests[i]);
+  for (let i = 0; i < contests.length; i++) {
+    if (contest[i].StartTime > deleteBeforeTime) temp.push(contests[i]);
   }
   contests = temp;
 };

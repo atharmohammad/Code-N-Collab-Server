@@ -1,5 +1,5 @@
 const axios = require("axios");
-const {AwesomeKey} = require("./getKey");
+const { AwesomeKey } = require("./getKey");
 
 const languageMapper = (lang_mode) => {
   switch (lang_mode) {
@@ -48,9 +48,9 @@ const compilerFunc = async (lang, code, input) => {
   const { language, versionIndex } = languageMapper(lang);
   console.log("lang:", lang, "code:", code, "input:", input);
   const url = "https://api.jdoodle.com/v1/execute";
-  const [clientId, clientSecret] = AwesomeKey()
-  console.log('keys',clientId, clientSecret)
-  
+  const [clientId, clientSecret] = AwesomeKey();
+  console.log("keys", clientId, clientSecret);
+
   const sendData = {
     clientId,
     clientSecret,
