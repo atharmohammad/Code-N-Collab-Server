@@ -78,18 +78,23 @@ router.post("/likeRouter/:id",auth,async(req,res)=>{
 router.patch("/updateComment/:id",auth,async(req,res)=>{
   const id = req.params.id;
   try{
+    console.log(1)
     const comment = await Comments.findOne({_id:id,Deleted:false});
     if(!comment){
       return res.status(404).send();
     }
 
-    if(comment.User.toString().trim() !== req.user_id.toString().trim()){
+    console.log(2)
+
+    if(comment.User.toString().trim() !== req.user._id.toString().trim()){
       return res.status(401).send();
     }
 
-    comment.Body = req.Body;
+    console.log(3)
+
+    comment.Body = req.body.Body;
     await comment.save();
-    res.status(200).send();
+    res.status(200).send(comment.Body);
   }catch(e){
     res.status(400).send();
   }

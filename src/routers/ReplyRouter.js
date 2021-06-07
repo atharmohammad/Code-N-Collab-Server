@@ -8,6 +8,7 @@ const auth = require("../middleware/Auth");
 
 router.post("/newReply/:id",auth,async(req,res)=>{
   try{
+    console.log(1);
     const reply = new Reply({
       Body:req.body.Body,
       User:req.user._id,
@@ -18,7 +19,7 @@ router.post("/newReply/:id",auth,async(req,res)=>{
       res.status(404).send();
 
     const newReply = await reply.save();
-    comment.push(newReply._id);
+    comment.Replies.push(newReply._id);
     await comment.save();
     res.status(200).send(newReply);
   }catch(e){
@@ -28,23 +29,22 @@ router.post("/newReply/:id",auth,async(req,res)=>{
 
 router.get("/getReply/:id",async(req,res)=>{
   try{
-    const comment = await Comments.findOne({_id:req.params.id,Deleted:false});
-    if(!comment)
-      res.status(400).send();
-
-    const replies = await comment.populate({
+    const comment = await Comments.findOne({_id:req.params.id,Deleted:false}).populate({
       path:"Replies",
       model:"Reply",
+      select:["User","Body","Likes"],
       match:{Deleted:false},
-      populate:{path:"User",select:"Name"},
-      options:{
-        limit:parseInt(req.params.limit),
-      }
+      populate:{path:"User",select:["Name","Designation","Avatar","Institution"]},
     }).exec();
 
-    res.status(200).send(replies);
+    if(!comment){
+      return res.status(400).send();
+    }
+
+    res.status(200).send(comment);
 
   }catch(e){
+    console.log(e);
     res.status(400).send();
   }
 })
