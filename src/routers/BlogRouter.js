@@ -81,4 +81,36 @@ router.patch("/currBlog/:id", auth, async (req, res) => {
   }
 });
 
+router.post("/like/:id", auth, async (req, res) => {
+  try {
+    const blog = await Blog.findOne({
+      _id: req.params.id,
+      Deleted: false,
+    });
+
+    if (!blog){
+      return res.status(404).send();
+    }
+
+    const like = blog.Likes.find((curr) => {
+      return curr.toString().trim() == req.user._id.toString().trim();
+    });
+
+    if (like) {
+      const likeArray = blog.Likes.filter(
+        (curr) => curr.toString().trim() != req.user._id.toString().trim()
+      );
+      blog.Likes = likeArray;
+    } else {
+      blog.Likes.push(req.user._id);
+    }
+
+    await blog.save();
+    res.status(200).send(blog);
+  } catch (e) {
+    console.log(e);
+    res.status(400).send();
+  }
+});
+
 module.exports = router;
