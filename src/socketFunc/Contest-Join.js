@@ -15,6 +15,13 @@ let DeleteIntervalOn = false;
 module.exports = function (io) {
   io.on("connection", (socket) => {
     socket.on("Contest-Join", (user, callback) => {
+      if(!user||!user.Name || !user.Name.trim()){
+        return callback({ error: 'Update Codeforces Handle', contest: null});
+      }
+      if(!user.RoomId || !user.RoomId.trim()){
+        return callback({ error: 'Invalid room Name', contest: null});
+      }
+
       const obj = checkContest(user.RoomId, user.Name, socket.id);
       console.log(obj.contest);
       if (obj.error) {
