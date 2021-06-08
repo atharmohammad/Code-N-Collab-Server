@@ -8,7 +8,6 @@ const auth = require("../middleware/Auth");
 
 router.post("/newReply/:id", auth, async (req, res) => {
   try {
-    console.log(1);
     const reply = new Reply({
       Body: req.body.Body,
       User: req.user._id,
@@ -38,7 +37,7 @@ router.get("/getReply/:id", async (req, res) => {
       .populate({
         path: "Replies",
         model: "Reply",
-        select: ["User", "Body", "Likes"],
+        select: ["User", "Body", "Likes", "Comment"],
         match: { Deleted: false },
         populate: {
           path: "User",
@@ -83,7 +82,7 @@ router.post("/like/:id", auth, async (req, res) => {
 });
 
 router.delete("/deleteReply/:id", auth, async (req, res) => {
-  const id = req.params._id;
+  const id = req.params.id;
 
   try {
     const reply = await Reply.findOne({ _id: id, Deleted: false });
@@ -105,7 +104,7 @@ router.patch("/updateReply/:id", auth, async (req, res) => {
   const id = req.params.id;
 
   try {
-    const reply = Reply.findOne({ _id: id, Deleted: false });
+    const reply = await Reply.findOne({ _id: id, Deleted: false });
 
     if (!reply) {
       return res.status(404).send();
@@ -114,7 +113,6 @@ router.patch("/updateReply/:id", auth, async (req, res) => {
     if (reply.User.toString().trim() !== req.user._id.toString().trim()) {
       return res.status(401).send();
     }
-
     reply.Body = req.body.Body;
     await reply.save();
     res.status(200).send(reply);

@@ -112,7 +112,15 @@ router.delete("/deleteComment/:id", auth, async (req, res) => {
     if (comment.User.toString().trim() !== req.user._id.toString().trim()) {
       return res.status(401).send();
     }
-
+    const blog = await Blogs.findOne({
+      _id: comment.Blog.toString().trim(),
+      Deleted: false,
+    });
+    const newCommentArray = blog.Comments.filter(
+      (comment) => comment.toString().trim() !== id.toString().trim()
+    );
+    blog.Comments = newCommentArray;
+    await blog.save();
     comment.Deleted = true;
     await comment.save();
     res.status(200).send();
