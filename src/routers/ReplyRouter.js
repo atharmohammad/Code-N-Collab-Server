@@ -58,7 +58,7 @@ router.get("/getReply/:id", async (req, res) => {
   }
 });
 
-router.post("/likeReply/:id", auth, async (req, res) => {
+router.post("/like/:id", auth, async (req, res) => {
   try {
     const reply = await Reply.findOne({ _id: req.params.id, Deleted: false });
     if (!reply) res.status(404).send();

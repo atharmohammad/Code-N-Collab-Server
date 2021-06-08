@@ -88,7 +88,7 @@ router.post("/like/:id", auth, async (req, res) => {
       Deleted: false,
     });
 
-    if (!blog){
+    if (!blog) {
       return res.status(404).send();
     }
 
