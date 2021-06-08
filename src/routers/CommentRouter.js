@@ -54,7 +54,7 @@ router.post("/createComment/:id", auth, async (req, res) => {
   }
 });
 
-router.post("/likeRouter/:id", auth, async (req, res) => {
+router.post("/like/:id", auth, async (req, res) => {
   try {
     const comment = await Comments.findOne({
       _id: req.params.id,
