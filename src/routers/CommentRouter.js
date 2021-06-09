@@ -11,7 +11,7 @@ router.get("/getComments/:id", async (req, res) => {
       .populate({
         path: "Comments",
         model: "Comment",
-        select: ["User", "Body", "Likes", "Replies"],
+        select: ["User", "Body", "Likes", "Replies","createdAt"],
         match: { Deleted: false },
         populate: {
           path: "User",

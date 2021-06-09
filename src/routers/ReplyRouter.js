@@ -37,7 +37,7 @@ router.get("/getReply/:id", async (req, res) => {
       .populate({
         path: "Replies",
         model: "Reply",
-        select: ["User", "Body", "Likes", "Comment"],
+        select: ["User", "Body", "Likes", "Comment","createdAt"],
         match: { Deleted: false },
         populate: {
           path: "User",
