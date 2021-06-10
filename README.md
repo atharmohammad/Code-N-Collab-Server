@@ -39,7 +39,7 @@ We would love for you to contribute to the Code-N-Collab! To contribute to this 
    $ cd Code-N-Collab-Server
    $ git remote add upstream https://github.com/atharmohammad/Code-N-Collab-Server.git
    $ npm install
-   $ npm start
+   $ npm run dev
 ```
 
 ### Setup Convergence 
