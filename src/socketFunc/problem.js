@@ -37,7 +37,10 @@ module.exports = function (io) {
 
 async function codeforces(URL) {
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true ,args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+  ]});
     const page = await browser.newPage();
     await page.goto(URL);
     const text = await page.evaluate(async function () {
@@ -54,7 +57,10 @@ async function codeforces(URL) {
 
 async function codechef(URL) {
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true ,args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+  ]});
     const page = await browser.newPage();
     await page.goto(URL);
     const text = await page.evaluate(function () {
@@ -72,7 +78,10 @@ async function codechef(URL) {
 
 async function geeksforgeeks(URL) {
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true ,args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+  ]});
     const page = await browser.newPage();
     await page.goto(URL);
     const text = await page.evaluate(function () {
@@ -89,7 +98,10 @@ async function geeksforgeeks(URL) {
 
 async function atcoder(URL) {
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true ,args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+  ]});
     const page = await browser.newPage();
     await page.goto(URL);
     const text = await page.evaluate(function () {
@@ -106,7 +118,10 @@ async function atcoder(URL) {
 
 async function cses(URL) {
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true ,args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+  ]});
     const page = await browser.newPage();
     await page.goto(URL);
     const text = await page.evaluate(function () {

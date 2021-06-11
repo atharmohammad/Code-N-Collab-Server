@@ -3,7 +3,7 @@ const router = new express.Router();
 const { google } = require("googleapis");
 const { getAuthUrl, getGoogleUser } = require("../Function/Oauth2");
 const User = require("../models/User");
-
+require('dotenv').config()
 global.oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
