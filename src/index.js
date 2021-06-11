@@ -12,7 +12,7 @@ const oAuthRouter = require("./routers/OauthRouter");
 //const KEY = require("../config");
 const app = express();
 const server = http.createServer(app);
- 
+
 app.use(
   cors({
     origin: "*",
@@ -33,10 +33,10 @@ const io = socketIo(server, {
   },
 });
 
-require("./SocketFunc/userJoin")(io);
-require("./SocketFunc/chat")(io);
-require("./SocketFunc/Compile")(io);
-require("./SocketFunc/problem")(io);
-require("./SocketFunc/Contest-Join")(io);
+require("./socketFunc/userJoin")(io);
+require("./socketFunc/chat")(io);
+require("./socketFunc/Compile")(io);
+require("./socketFunc/problem")(io);
+require("./socketFunc/Contest-Join")(io);
 
 server.listen(port, () => console.log(`Listening on port ${port}`));
