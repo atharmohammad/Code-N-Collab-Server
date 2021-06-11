@@ -1,3 +1,4 @@
 node_modules
 Configs
 nodemon.json
+.env

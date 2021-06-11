@@ -1,6 +1,7 @@
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
+require('dotenv').config()
 const port = process.env.PORT || 8080;
 const cors = require("cors");
 require("./db/mongoose");
@@ -9,7 +10,6 @@ const blogRouter = require("./routers/BlogRouter");
 const replyRouter = require("./routers/ReplyRouter");
 const commentRouter = require("./routers/CommentRouter");
 const oAuthRouter = require("./routers/OauthRouter");
-
 //const KEY = require("../config");
 const app = express();
 const server = http.createServer(app);
