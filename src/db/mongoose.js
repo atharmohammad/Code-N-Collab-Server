@@ -1,9 +1,12 @@
-const mongoose = require('mongoose');
-const URL = require('../../Configs/db');
+const mongoose = require("mongoose");
 
-mongoose.connect(URL,{useNewUrlParser:true,useCreateIndex:true},(e,r)=>{
-  if(e){
-    return console.log('error',e) 
+mongoose.connect(
+  process.env.MONGO_DB_URL,
+  { useNewUrlParser: true, useCreateIndex: true },
+  (e, r) => {
+    if (e) {
+      return console.log("error", e);
+    }
+    console.log("connected");
   }
-  console.log('connected');
-})
+);
