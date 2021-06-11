@@ -1,7 +1,6 @@
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
-require('dotenv').config()
 const port = process.env.PORT || 8080;
 const cors = require("cors");
 require("./db/mongoose");
