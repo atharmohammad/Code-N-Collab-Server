@@ -78,6 +78,16 @@ It provides users with :-
 
 - <a href="https://reactjs.org/">Reactjs</a>
 - <a href="https://nodejs.org/en/">Nodejs</a>
+- <a href="https://console.cloud.google.com/">Google Cloud Platform</a>
+
+#### Setup your free GCP account for google Oauth
+- https://support.google.com/cloud/answer/6158849?hl=en
+
+- Setup API&Credentials for Web Application
+
+- Provide a Redirect URI in the Credentials(The redirect_URI will be used to redirect to the page after login with google,in below environment variable example we have setup redirect_URI=http://localhost:3000/homepage/ , using port 3000 you can use any port but make sure to add /homepage after that to redirect to correct route)
+
+- copy <YOUR_GOOGLE_CLIENT_ID> and <YOUR_GOOGLE_CLIENT_SECRET>
 
 #### Setup Environment variables 
 - you can declare your env vars using dotenv like below :
@@ -90,7 +100,6 @@ It provides users with :-
 
 ```
 - or you can declare your env vars in nodemon.json if you are using nodemon for development like below:
-- 
 ```
 {
     "env":{
