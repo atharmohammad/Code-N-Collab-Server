@@ -11,7 +11,6 @@
 [![MIT License][license-shield]][license-url]
 [![Issues][issues-shield]][issues-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-[![Netlify Status](https://api.netlify.com/api/v1/badges/30ec72b0-446f-44c8-b683-6f975f131898/deploy-status)](https://app.netlify.com/sites/code-n-collab/deploys)
 
 <details open="open">
   <summary>Table of Contents</summary>
