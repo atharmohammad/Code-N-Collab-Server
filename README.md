@@ -97,6 +97,8 @@ It provides users with :-
      redirect_URI=http://localhost:3000/homepage/
      BaseURI=http://localhost:8080/
      MONGO_DB_URL=<YOUR_MONGO_DB_URL>
+     COMPILE_CLIENT_ID=<COMPILER_CLIENT_ID>
+     COMPILE_CLIENT_SECRET=<COMPILER_CLIENT_SECRET>
 
 ```
 - or you can declare your env vars in nodemon.json if you are using nodemon for development like below:
@@ -108,6 +110,8 @@ It provides users with :-
         "redirect_URI" : "http://localhost:3000/homepage/",
         "BaseURI":"http://localhost:8080/",
         "MONGO_DB_URL":"<YOUR_MONGO_DB_URL>"
+        "COMPILE_CLIENT_ID":"<COMPILER_CLIENT_ID>"
+        "COMPILE_CLIENT_SECRET":"<COMPILER_CLIENT_SECRET>"
       }
 }
 
