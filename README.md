@@ -169,7 +169,7 @@ C:\Users\mohdr>docker run -p "8000:80" --name convergence convergencelabs/conver
 [issues-shield]: https://img.shields.io/github/issues/atharmohammad/Code-N-Collab-Server.svg?style=for-the-badge
 [issues-url]: https://github.com/atharmohammad/Code-N-Collab-Server/issues
 [license-shield]: https://img.shields.io/github/license/atharmohammad/Code-N-Collab-Server.svg?style=for-the-badge
-[license-url]: https://github.com/atharmohammad/Code-N-Collab-Server/blob/master/LICENSE
+[license-url]: https://github.com/atharmohammad/Code-N-Collab-Server#license
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/athar-mohammad-34068a157/
 
