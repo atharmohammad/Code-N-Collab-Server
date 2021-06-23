@@ -103,6 +103,7 @@ const startContest = ({
   problemTags,
   minRating,
   maxRating,
+  maxDuration,
   problemArray,
 }) => {
   ////setting up problems////
@@ -111,7 +112,10 @@ const startContest = ({
   const problems = [];
   const problemLink = "https://codeforces.com/problemset/problem/";
   let problemCount = 0;
-  let contestIndex = -1;
+
+  if (!maxDuration || maxDuration < 10 || maxDuration > 120) {
+    maxDuration = 30;
+  }
 
   problemArray.every((problem, i) => {
     if (
@@ -138,8 +142,11 @@ const startContest = ({
   ////********/////////
   /////Setting up the contest////
   const contest = contests.find((cont, ind) => cont.Id === room);
+  if (!contest) {
+    return null;
+  }
   contest.Started = true; //Starting the contest
-  contest.EndTime = curr_time.getTime() + 2 * 60 * 60 * 1000;
+  contest.EndTime = curr_time.getTime() + maxDuration * 60 * 1000;
   contest.Problems = problems;
   contest.problemTags = problemTags;
   contest.minRating = minRating;
@@ -211,7 +218,7 @@ const checkIfProblemSolved = (user, unsolvedProblem, roomId, arr) => {
   }
 
   arr.every((prob, i) => {
-    if (check(unsolvedProblem, prob)) {
+    if (check(contest, unsolvedProblem, prob)) {
       if (
         contest.userToProblem.has(prob.problem.name) &&
         contest.userToProblem.get(prob.problem.name).time >
@@ -258,7 +265,7 @@ const updateScores = (roomId) => {
     }
   });
 
-  contest.Users.sort((a, b) => a.Score - b.Score);
+  contest.Users.sort((a, b) => b.Score - a.Score);
 
   contest.Problems.map((problem, i) => {
     if (contest.userToProblem.has(problem.name)) {
@@ -268,14 +275,17 @@ const updateScores = (roomId) => {
   });
 };
 
-const check = (unsolvedProblem, prob) => {
+const check = (contest, unsolvedProblem, prob) => {
+  const cftime = prob.creationTimeSeconds * 1000;
+  console.log("cftime", cftime, "\n", "\n");
+
   return (
     prob.problem.name.trim().toLowerCase() ==
-      unsolvedProblem.trim().toLowerCase() && prob.verdict == "OK"
+      unsolvedProblem.trim().toLowerCase() &&
+    prob.verdict == "OK" &&
+    cftime >= contest.StartTime &&
+    cftime <= contest.EndTime
   );
-  //  prob.creationTimeSeconds >= contests[contestIndex].StartTime
-  //  &&
-  // prob.creationTimeSeconds <= contests[contestIndex].EndTime)
 };
 
 function shuffle(array) {

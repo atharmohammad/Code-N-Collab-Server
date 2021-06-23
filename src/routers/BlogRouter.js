@@ -7,6 +7,8 @@ const User = require("../models/User");
 router.get("/Allblogs", async (req, res) => {
   try {
     const blogs = await Blog.find({ Deleted: false })
+      .limit(5)
+      .skip(parseInt(req.query.skip))
       .sort({createdAt:'desc'})
       .populate({
         path: "User",

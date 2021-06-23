@@ -49,7 +49,7 @@ module.exports = function (io) {
     });
     socket.on(
       "Start-Contest",
-      ({ room, problemTags, minRating, maxRating }) => {
+      ({ room, problemTags, minRating, maxRating,maxDuration }) => {
         socket.to(room).emit("Contest-Starting");
         problemTags = problemTags.map((tag) => tag.label);
         const URL = createURL(problemTags);
@@ -64,6 +64,7 @@ module.exports = function (io) {
               minRating,
               maxRating,
               problemArray,
+              maxDuration,
             });
             const teamMembers = getTeamMembers(contest.UsersId);
             io.to(room).emit("Update", contest); //First update then send memebers
