@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const auth = async (req, res, next) => {
   try {
     const token = req.header("Authorization").split(" ")[1];
-    const decodedKey = jwt.verify(token, "Random-Secret");
+    const decodedKey = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await Users.findOne({
       _id: decodedKey._id,

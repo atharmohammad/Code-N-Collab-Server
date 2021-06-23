@@ -46,8 +46,8 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     Avatar: {
-      type: String,
-      default: "1",
+      type: Number,
+      default: 1,
     },
     Verified: {
       type: Boolean,
@@ -110,7 +110,7 @@ userSchema.methods.toJSON = function () {
 
 userSchema.methods.generateToken = async function () {
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, "Random-Secret");
+  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
   user.token = token;
   await user.save();
   return token;

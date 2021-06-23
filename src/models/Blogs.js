@@ -18,6 +18,10 @@ const blogSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    LikesLength:{
+      type:Number,
+      default:0
+    },
     Likes: [
       {
         type: mongoose.Schema.Types.ObjectId,

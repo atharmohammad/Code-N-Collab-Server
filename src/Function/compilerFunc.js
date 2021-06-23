@@ -48,7 +48,8 @@ const compilerFunc = async (lang, code, input) => {
   const { language, versionIndex } = languageMapper(lang);
   console.log("lang:", lang, "code:", code, "input:", input);
   const url = "https://api.jdoodle.com/v1/execute";
-  const [clientId, clientSecret] = AwesomeKey();
+  const [clientId,clientSecret] = AwesomeKey();
+
   console.log("keys", clientId, clientSecret);
 
   const sendData = {
