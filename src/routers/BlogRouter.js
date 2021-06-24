@@ -6,10 +6,18 @@ const User = require("../models/User");
 
 router.get("/Allblogs", async (req, res) => {
   try {
+    let sort;
+    // /Allblogs?sortBy=popularity&skip=5
+    if(req.params.sortBy === "popularity"){
+      sort = {LikesLength:'desc'}
+    }else{
+      sort = {createdAt:'desc'}
+    }
+
     const blogs = await Blog.find({ Deleted: false })
       .limit(5)
       .skip(parseInt(req.query.skip))
-      .sort({createdAt:'desc'})
+      .sort(sort)
       .populate({
         path: "User",
         select: ["Name", "Designation", "Avatar", "Institution"],
@@ -107,6 +115,8 @@ router.post("/like/:id", auth, async (req, res) => {
     } else {
       blog.Likes.push(req.user._id);
     }
+
+    blog.LikesLength = blog.Likes.length;
 
     await blog.save();
     res.status(200).send(blog);
