@@ -40,17 +40,15 @@ const languageMapper = (lang_mode) => {
     case "nodejs":
       return { language: "nodejs", versionIndex: "3" };
   }
-  console.log("Error laguage not defined");
+ 
   return {};
 };
 
 const compilerFunc = async (lang, code, input) => {
   const { language, versionIndex } = languageMapper(lang);
-  console.log("lang:", lang, "code:", code, "input:", input);
+ 
   const url = "https://api.jdoodle.com/v1/execute";
   const [clientId,clientSecret] = AwesomeKey();
-
-  console.log("keys", clientId, clientSecret);
 
   const sendData = {
     clientId,
