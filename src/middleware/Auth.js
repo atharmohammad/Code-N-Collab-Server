@@ -16,6 +16,12 @@ const auth = async (req, res, next) => {
 
     req.token = token;
     req.user = user;
+    req.Admin = false;
+
+    if(req.user.SuperUser){
+      req.Admin = true;
+    }
+    
     next();
   } catch (e) {
     res.status(401).send({ error: "Please Authenticate !" });

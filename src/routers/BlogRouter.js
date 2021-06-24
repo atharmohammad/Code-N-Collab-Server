@@ -49,7 +49,7 @@ router.delete("/delete/:id", auth, async (req, res) => {
     const blog = await Blog.findOne({ _id: _id, Deleted: false });
     if (!blog) return res.status(404).send();
 
-    if (blog.User.toString().trim() != req.user._id.toString().trim()) {
+    if (!req.Admin && blog.User.toString().trim() != req.user._id.toString().trim()) {
       return res.status(401).send();
     }
 

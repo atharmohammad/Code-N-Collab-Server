@@ -109,7 +109,7 @@ router.delete("/deleteComment/:id", auth, async (req, res) => {
     const comment = await Comments.findOne({ _id: id, Deleted: false });
     if (!comment) return res.status(404).send();
 
-    if (comment.User.toString().trim() !== req.user._id.toString().trim()) {
+    if (!req.Admin && comment.User.toString().trim() !== req.user._id.toString().trim()) {
       return res.status(401).send();
     }
     const blog = await Blogs.findOne({

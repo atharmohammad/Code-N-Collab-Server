@@ -88,7 +88,7 @@ router.delete("/deleteReply/:id", auth, async (req, res) => {
     const reply = await Reply.findOne({ _id: id, Deleted: false });
     if (!reply) return res.status(404).send();
 
-    if (reply.User.toString().trim() !== req.user._id.toString().trim()) {
+    if (!req.Admin && reply.User.toString().trim() !== req.user._id.toString().trim()) {
       return res.status(401).send();
     }
 
