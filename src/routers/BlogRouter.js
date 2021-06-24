@@ -8,7 +8,7 @@ router.get("/Allblogs", async (req, res) => {
   try {
     let sort;
     // /Allblogs?sortBy=popularity&skip=5
-    if(req.params.sortBy === "popularity"){
+    if(req.query.sortBy === "popularity"){
       sort = {LikesLength:'desc'}
     }else{
       sort = {createdAt:'desc'}
