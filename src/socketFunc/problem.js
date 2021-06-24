@@ -6,7 +6,7 @@ module.exports = function (io) {
     socket.on("codeforces-problem", async (link) => {
       let problem = "";
       if (link == null || link == undefined) {
-        console.log("link not defined");
+        //console.log("link not defined");
       } else if (link.includes("codeforces.com")) {
         problem = await codeforces(link);
       } else if (link.includes("codechef.com")) {

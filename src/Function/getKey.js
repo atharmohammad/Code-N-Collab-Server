@@ -12,7 +12,7 @@ const sz = keys.length;
 const AwesomeKey = () => {
   idx++;
   if (idx == sz) idx = 0;
-  console.log(idx);
+ 
   return keys[idx];
 };
 
