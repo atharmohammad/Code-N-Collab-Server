@@ -167,7 +167,6 @@ const getTeamMembers = (userIds) => {
 
 const createURL = (problemTags) => {
   const tags = problemTags.join(";");
-  console.log("tags:", problemTags, tags);
   const URL = `https://codeforces.com/api/problemset.problems?tags=${tags}`;
   return URL;
 };
@@ -277,7 +276,6 @@ const updateScores = (roomId) => {
 
 const check = (contest, unsolvedProblem, prob) => {
   const cftime = prob.creationTimeSeconds * 1000;
-  console.log("cftime", cftime, "\n", "\n");
 
   return (
     prob.problem.name.trim().toLowerCase() ==
