@@ -16,13 +16,13 @@ module.exports = function (io) {
 
       compilerFunc(language, code, input)
         .then((res) => {
-          console.log("response", res.data);
+         
           if (reason === "code-editor")
             io.to(room).emit("COMPILE_OFF", res.data);
           else io.to(socket.id).emit("COMPILE_OFF", res.data);
         })
         .catch((e) => {
-          console.log("error:", e);
+         
           if (reason === "code-editor") io.to(room).emit("COMPILE_OFF", e.data);
           else io.to(socket.id).emit("COMPILE_OFF", res.data);
         });
