@@ -41,7 +41,7 @@ router.get("/getReply/:id", async (req, res) => {
         match: { Deleted: false },
         populate: {
           path: "User",
-          select: ["Name", "Designation", "Avatar", "Institution"],
+          select: ["Name", "Designation", "Avatar", "Institution","SuperUser"],
         },
       })
       .exec();

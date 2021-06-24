@@ -8,19 +8,19 @@ router.get("/Allblogs", async (req, res) => {
   try {
     let sort;
     // /Allblogs?sortBy=popularity&skip=5
-    if(req.query.sortBy === "popularity"){
-      sort = {LikesLength:'desc'}
-    }else{
-      sort = {createdAt:'desc'}
+    if (req.query.sortBy === "popularity") {
+      sort = { LikesLength: "desc" };
+    } else {
+      sort = { createdAt: "desc" };
     }
 
     const blogs = await Blog.find({ Deleted: false })
-      .limit(5)
+      .limit(10)
       .skip(parseInt(req.query.skip))
       .sort(sort)
       .populate({
         path: "User",
-        select: ["Name", "Designation", "Avatar", "Institution"],
+        select: ["Name", "Designation", "Avatar", "Institution", "SuperUser"],
         match: { Deleted: false },
       })
       .exec();
@@ -49,7 +49,10 @@ router.delete("/delete/:id", auth, async (req, res) => {
     const blog = await Blog.findOne({ _id: _id, Deleted: false });
     if (!blog) return res.status(404).send();
 
-    if (!req.Admin && blog.User.toString().trim() != req.user._id.toString().trim()) {
+    if (
+      !req.Admin &&
+      blog.User.toString().trim() != req.user._id.toString().trim()
+    ) {
       return res.status(401).send();
     }
 
@@ -67,7 +70,7 @@ router.get("/currentBlog/:id", async (req, res) => {
     const id = req.params.id;
     const blog = await Blog.findOne({ _id: id, Deleted: false }).populate({
       path: "User",
-      select: ["Name", "Designation", "Avatar", "Institution"],
+      select: ["Name", "Designation", "Avatar", "Institution","SuperUser"],
       match: { Deleted: false },
     });
     if (!blog) res.status(404).send();
