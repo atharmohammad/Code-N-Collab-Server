@@ -89,6 +89,10 @@ It provides users with :-
 
 - copy <YOUR_GOOGLE_CLIENT_ID> and <YOUR_GOOGLE_CLIENT_SECRET>
 
+#### Setup your MONGO_DB atlas
+- <a href="https://docs.atlas.mongodb.com/getting-started/">Atlas Docs</a>
+- get the <MONGO_DB_URL> from your cluster , you have to use it in env vars
+
 #### Setup Environment variables 
 Go to /src/Function/getKey.js and remove 3 lines as below from the keys array 
 
@@ -133,7 +137,13 @@ Go to /src/Function/getKey.js and remove 3 lines as below from the keys array
    $ cd Code-N-Collab-Server
    $ git remote add upstream https://github.com/atharmohammad/Code-N-Collab-Server.git
    $ npm install
-   $ npm start
+   
+   $ npm start // if you are using dotenv
+   
+   //or
+   
+   $ npm run dev // if you are using nodemon.json 
+   
 ```
 
 ## 💁 Contribution guidelines 
