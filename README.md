@@ -163,8 +163,8 @@ Go to /src/Function/getKey.js and remove 3 lines as below from the keys array
 ## 📚 Resources 
 - <a href="https://socket.io/docs/v4" >Socket.Io Documentation </a>
 - <a href="https://convergence.io/documentation/" > Convergence Docs </a>
-- <a href="https://docs.docker.com/docker-for-windows/install/">Docker for Windows</a> (For windows user)
-- <a href="https://microsoft.github.io/monaco-editor/api/modules/monaco.editor.html">Monaco Editor Docs</a>
+- <a href="https://docs.atlas.mongodb.com/getting-started/">Atlas Docs </a>
+- <a href="https://github.com/scniro/react-codemirror2">React-Codemirror Editor Docs</a>
 - <a href="https://mongoosejs.com/docs/guide.html">Mongoose Docs</a>
 
 ## License
