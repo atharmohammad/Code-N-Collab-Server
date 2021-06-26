@@ -90,15 +90,24 @@ It provides users with :-
 - copy <YOUR_GOOGLE_CLIENT_ID> and <YOUR_GOOGLE_CLIENT_SECRET>
 
 #### Setup Environment variables 
-- you can declare your env vars using dotenv like below :
+Go to /src/Function/getKey.js and remove 3 lines as below from the keys array 
+
+``` 
+  [process.env.COMPILE_CLIENT_ID2, process.env.COMPILE_CLIENT_SECRET2],
+  [process.env.COMPILE_CLIENT_ID3, process.env.COMPILE_CLIENT_SECRET3],
+  [process.env.COMPILE_CLIENT_ID4, process.env.COMPILE_CLIENT_SECRET4],
+```
+
+- now you can declare your env vars using dotenv like below :
+
 ```
      GOOGLE_CLIENT_ID=<YOUR_GOOGLE_CLIENT_ID>
      GOOGLE_CLIENT_SECRET=<YOUR_GOOGLE_CLIENT_SECRET>
      redirect_URI=http://localhost:3000/homepage/
      BaseURI=http://localhost:8080/
      MONGO_DB_URL=<YOUR_MONGO_DB_URL>
-     COMPILE_CLIENT_ID=<COMPILER_CLIENT_ID>
-     COMPILE_CLIENT_SECRET=<COMPILER_CLIENT_SECRET>
+     COMPILE_CLIENT_ID1=<COMPILE_CLIENT_ID1>
+     COMPILE_CLIENT_SECRET1=<COMPILER_CLIENT_SECRET1>
 
 ```
 - or you can declare your env vars in nodemon.json if you are using nodemon for development like below:
@@ -110,20 +119,11 @@ It provides users with :-
         "redirect_URI" : "http://localhost:3000/homepage/",
         "BaseURI":"http://localhost:8080/",
         "MONGO_DB_URL":"<YOUR_MONGO_DB_URL>"
-        "COMPILE_CLIENT_ID":"<COMPILER_CLIENT_ID>"
-        "COMPILE_CLIENT_SECRET":"<COMPILER_CLIENT_SECRET>"
+        "COMPILE_CLIENT_ID1":"<COMPILE_CLIENT_ID1>"
+        "COMPILE_CLIENT_SECRET1":"<COMPILER_CLIENT_SECRET1>"
       }
 }
 
-```
-
-#### Setup Convergence 
-To setup convergence server you have to download docker, for windows user they can download <a href="https://docs.docker.com/docker-for-windows/install/">Docker for Windows</a>
-
-run the following command in your terminal
-
-```
-C:\Users\mohdr>docker run -p "8000:80" --name convergence convergencelabs/convergence-omnibus
 ```
 
 ### Installation
