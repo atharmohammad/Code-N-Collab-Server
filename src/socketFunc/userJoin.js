@@ -33,7 +33,7 @@ module.exports = function (io) {
         try {
           const clients = await io.in(user.room).fetchSockets();
           const teamMembers = getUsersInRoom(user.room);
-          io.to(user.room).emit("peopleInRoom", teamMembers);
+          io.to(user.room).emit("peopleInRoom", {teamMembers,userJoin:user.username});
           //counts how many users are active in room
           let res = "";
           if (clients.length > 1) {
@@ -90,7 +90,7 @@ module.exports = function (io) {
             const clients = await io.in(user.room).fetchSockets();
             const teamMembers = getUsersInRoom(user.room);
             if (clients.length) {
-              io.to(user.room).emit("peopleInRoom", teamMembers);
+              io.to(user.room).emit("peopleInRoom", {teamMembers, userLeft:user.username});
             }
 
             if (clients.length == 0) {
