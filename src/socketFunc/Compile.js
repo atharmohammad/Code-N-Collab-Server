@@ -2,6 +2,7 @@ const { getUser } = require("../utils/Users");
 const { compilerFunc } = require("../Function/compilerFunc");
 
 module.exports = function (io) {
+  try{
   io.on("connection", (socket) => {
     socket.on("Compile_ON", ({ language, code, input, reason }) => {
       const sids = io.of("/").adapter.sids;
@@ -28,4 +29,7 @@ module.exports = function (io) {
         });
     });
   });
+}catch(e){
+  console.log(e)
+}
 };

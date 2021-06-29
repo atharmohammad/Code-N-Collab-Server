@@ -8,6 +8,9 @@ const auth = require("../middleware/Auth");
 
 router.post("/newReply/:id", auth, async (req, res) => {
   try {
+    if(!req.body.Body || !req.body.Body.trim()){
+      throw new Error('Reply cant be empty!')
+    }
     const reply = new Reply({
       Body: req.body.Body,
       User: req.user._id,
@@ -112,6 +115,9 @@ router.patch("/updateReply/:id", auth, async (req, res) => {
 
     if (reply.User.toString().trim() !== req.user._id.toString().trim()) {
       return res.status(401).send();
+    }
+    if(!req.body.Body || !req.body.Body.trim()){
+      throw new Error('Reply cant be empty!')
     }
     reply.Body = req.body.Body;
     await reply.save();

@@ -37,7 +37,7 @@
   </ol>
 </details>
 
-<a href="https://code-n-collab.netlify.app/" target="_blank" >
+<a href="https://code-n-collab.netlify.app/" target="_blank"  rel="noreferrer" >
 <table >
    <tr>
      <td>
@@ -89,16 +89,29 @@ It provides users with :-
 
 - copy <YOUR_GOOGLE_CLIENT_ID> and <YOUR_GOOGLE_CLIENT_SECRET>
 
+#### Setup your MONGO_DB atlas
+- <a href="https://docs.atlas.mongodb.com/getting-started/">Atlas Docs</a>
+- get the <MONGO_DB_URL> from your cluster , you have to use it in env vars
+
 #### Setup Environment variables 
-- you can declare your env vars using dotenv like below :
+Go to /src/Function/getKey.js and remove 3 lines as below from the keys array 
+
+``` 
+  [process.env.COMPILE_CLIENT_ID2, process.env.COMPILE_CLIENT_SECRET2],
+  [process.env.COMPILE_CLIENT_ID3, process.env.COMPILE_CLIENT_SECRET3],
+  [process.env.COMPILE_CLIENT_ID4, process.env.COMPILE_CLIENT_SECRET4],
+```
+
+- now you can declare your env vars using dotenv like below :
+
 ```
      GOOGLE_CLIENT_ID=<YOUR_GOOGLE_CLIENT_ID>
      GOOGLE_CLIENT_SECRET=<YOUR_GOOGLE_CLIENT_SECRET>
      redirect_URI=http://localhost:3000/homepage/
      BaseURI=http://localhost:8080/
      MONGO_DB_URL=<YOUR_MONGO_DB_URL>
-     COMPILE_CLIENT_ID=<COMPILER_CLIENT_ID>
-     COMPILE_CLIENT_SECRET=<COMPILER_CLIENT_SECRET>
+     COMPILE_CLIENT_ID1=<COMPILE_CLIENT_ID1>
+     COMPILE_CLIENT_SECRET1=<COMPILER_CLIENT_SECRET1>
 
 ```
 - or you can declare your env vars in nodemon.json if you are using nodemon for development like below:
@@ -110,20 +123,11 @@ It provides users with :-
         "redirect_URI" : "http://localhost:3000/homepage/",
         "BaseURI":"http://localhost:8080/",
         "MONGO_DB_URL":"<YOUR_MONGO_DB_URL>"
-        "COMPILE_CLIENT_ID":"<COMPILER_CLIENT_ID>"
-        "COMPILE_CLIENT_SECRET":"<COMPILER_CLIENT_SECRET>"
+        "COMPILE_CLIENT_ID1":"<COMPILE_CLIENT_ID1>"
+        "COMPILE_CLIENT_SECRET1":"<COMPILER_CLIENT_SECRET1>"
       }
 }
 
-```
-
-#### Setup Convergence 
-To setup convergence server you have to download docker, for windows user they can download <a href="https://docs.docker.com/docker-for-windows/install/">Docker for Windows</a>
-
-run the following command in your terminal
-
-```
-C:\Users\mohdr>docker run -p "8000:80" --name convergence convergencelabs/convergence-omnibus
 ```
 
 ### Installation
@@ -133,7 +137,13 @@ C:\Users\mohdr>docker run -p "8000:80" --name convergence convergencelabs/conver
    $ cd Code-N-Collab-Server
    $ git remote add upstream https://github.com/atharmohammad/Code-N-Collab-Server.git
    $ npm install
-   $ npm start
+   
+   $ npm start // if you are using dotenv
+   
+   //or
+   
+   $ npm run dev // if you are using nodemon.json 
+   
 ```
 
 ## 💁 Contribution guidelines 
@@ -153,8 +163,8 @@ C:\Users\mohdr>docker run -p "8000:80" --name convergence convergencelabs/conver
 ## 📚 Resources 
 - <a href="https://socket.io/docs/v4" >Socket.Io Documentation </a>
 - <a href="https://convergence.io/documentation/" > Convergence Docs </a>
-- <a href="https://docs.docker.com/docker-for-windows/install/">Docker for Windows</a> (For windows user)
-- <a href="https://microsoft.github.io/monaco-editor/api/modules/monaco.editor.html">Monaco Editor Docs</a>
+- <a href="https://docs.atlas.mongodb.com/getting-started/">Atlas Docs </a>
+- <a href="https://github.com/scniro/react-codemirror2">React-Codemirror Editor Docs</a>
 - <a href="https://mongoosejs.com/docs/guide.html">Mongoose Docs</a>
 
 ## License

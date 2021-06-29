@@ -38,7 +38,9 @@ router.post("/createComment/:id", auth, async (req, res) => {
     if (!blog) {
       return res.status(404).send();
     }
-
+    if(!req.body.Body || !req.body.Body.trim()){
+      throw new Error('Comment cant be empty!')
+    }
     const comment = new Comments({
       Body: req.body.Body,
       User: req.user._id,
@@ -77,8 +79,7 @@ router.post("/like/:id", auth, async (req, res) => {
     await comment.save();
     res.status(200).send(comment);
   } catch (e) {
-    console.log(e);
-    res.status(400).send();
+    res.status(400).send(e);
   }
 });
 
@@ -89,16 +90,20 @@ router.patch("/updateComment/:id", auth, async (req, res) => {
     if (!comment) {
       return res.status(404).send();
     }
-
+   
     if (comment.User.toString().trim() !== req.user._id.toString().trim()) {
       return res.status(401).send();
+    }
+    
+    if(!req.body.Body || !req.body.Body.trim()){
+      throw new Error('Comment cant be empty!')
     }
 
     comment.Body = req.body.Body;
     await comment.save();
     res.status(200).send(comment.Body);
   } catch (e) {
-    res.status(400).send();
+    res.status(400).send(e);
   }
 });
 
