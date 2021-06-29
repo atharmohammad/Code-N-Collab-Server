@@ -15,11 +15,11 @@ let DeleteIntervalOn = false;
 module.exports = function (io) {
   io.on("connection", (socket) => {
     socket.on("Contest-Join", (user, callback) => {
-      if(!user||!user.Name || !user.Name.trim()){
-        return callback({ error: 'Update Codeforces Handle', contest: null});
+      if (!user || !user.Name || !user.Name.trim()) {
+        return callback({ error: "Update Codeforces Handle", contest: null });
       }
-      if(!user.RoomId || !user.RoomId.trim()){
-        return callback({ error: 'Invalid room Name', contest: null});
+      if (!user.RoomId || !user.RoomId.trim()) {
+        return callback({ error: "Invalid room Name", contest: null });
       }
 
       const obj = checkContest(user.RoomId, user.Name, socket.id);
@@ -44,12 +44,15 @@ module.exports = function (io) {
         console.log("contest-joined");
         callback({ error: obj.error, contest: obj.contest });
         const teamMembers = getTeamMembers(obj.contest.UsersId);
-        io.in(user.RoomId).emit("peopleInRoom", teamMembers);
+        io.in(user.RoomId).emit("peopleInRoom", {
+          teamMembers,
+          userJoin: user.Name.trim().toLowerCase(),
+        });
       }
     });
     socket.on(
       "Start-Contest",
-      ({ room, problemTags, minRating, maxRating,maxDuration }) => {
+      ({ room, problemTags, minRating, maxRating, maxDuration }) => {
         socket.to(room).emit("Contest-Starting");
         problemTags = problemTags.map((tag) => tag.label);
         const URL = createURL(problemTags);
@@ -86,7 +89,10 @@ module.exports = function (io) {
       console.log(contest);
       const teamMembers = getTeamMembers(contest.UsersId);
       console.log(teamMembers);
-      io.to(user.room).emit("peopleInRoom", teamMembers);
+      io.to(user.room).emit("peopleInRoom", {
+        teamMembers,
+        userLeft: user.name.trim().toLowerCase(),
+      });
       socket.leave(user.room);
     });
   });
