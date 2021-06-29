@@ -1,6 +1,7 @@
 const { getUser } = require("../utils/Users");
 
 module.exports = function (io) {
+  try{
   io.on("connection", (socket) => {
     socket.on("clientMsg", ({ message }) => {
       
@@ -18,4 +19,7 @@ module.exports = function (io) {
       io.to(room).emit("serverMsg", data);
     });
   });
+ }catch(e){
+   console.log(e)
+ }
 };
