@@ -71,7 +71,7 @@ const compilerFunc = async (lang, code, input) => {
     return {
       data: {
         e:
-          "Error:404\nOops Something went wrong\nIt seems you are offline\n:-(",
+          "Error:404\nOops Something went wrong\n😢😞🙁",
       },
     };
   }
