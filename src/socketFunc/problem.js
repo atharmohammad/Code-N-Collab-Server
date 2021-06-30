@@ -5,33 +5,37 @@ module.exports = function (io) {
   try {
     io.on("connection", (socket) => {
       socket.on("codeforces-problem", async (link) => {
-        let problem = "";
-        if (link == null || link == undefined) {
-          //console.log("link not defined");
-        } else if (link.includes("codeforces.com")) {
-          problem = await codeforces(link);
-        } else if (link.includes("codechef.com")) {
-          problem = await codechef(link);
-        } else if (link.includes("geeksforgeeks.org")) {
-          problem = await geeksforgeeks(link);
-        } else if (link.includes("atcoder.jp")) {
-          problem = await atcoder(link);
-        } else if (link.includes("cses.fi")) {
-          problem = await cses(link);
-        } else {
-          problem = "";
-        }
+        try {
+          let problem = "";
+          if (link == null || link == undefined) {
+            //console.log("link not defined");
+          } else if (link.includes("codeforces.com")) {
+            problem = await codeforces(link);
+          } else if (link.includes("codechef.com")) {
+            problem = await codechef(link);
+          } else if (link.includes("geeksforgeeks.org")) {
+            problem = await geeksforgeeks(link);
+          } else if (link.includes("atcoder.jp")) {
+            problem = await atcoder(link);
+          } else if (link.includes("cses.fi")) {
+            problem = await cses(link);
+          } else {
+            problem = "";
+          }
 
-        const user = getUser(socket.id);
-        if (!user) {
-          return;
-        }
-        if (!problem) {
-          problem = `<div className='error'>
-        Please input correct url !<br/> Make sure Url is from following websites : geeksforgeeks , codeforces , codechef , atcoder,cses
+          const user = getUser(socket.id);
+          if (!user) {
+            return;
+          }
+          if (!problem) {
+            problem = `<div className='error'>
+        Please input correct url of the problem !<br/>And make sure Url is from following websites only: geeksforgeeks , codeforces , codechef , atcoder,cses
         </div>`;
+          }
+          io.to(user.room).emit("problem", problem);
+        } catch (e) {
+          console.log(e);
         }
-        io.to(user.room).emit("problem", problem);
       });
     });
   } catch (e) {

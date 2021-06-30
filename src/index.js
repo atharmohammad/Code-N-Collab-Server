@@ -23,6 +23,9 @@ app.use(
 );
 
 app.use(express.json());
+app.get('/',(req,res)=>{
+  return res.status(200).send({ title: 'Waking Call..' });
+})
 app.use("/user", userRouter);
 app.use("/Oauth", oAuthRouter);
 app.use("/blogs", blogRouter);
