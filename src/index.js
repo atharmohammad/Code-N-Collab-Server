@@ -15,12 +15,17 @@ const server = http.createServer(app);
 
 app.use(
   cors({
-    origin: "*",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      "origin": process.env.CORS_ORIGIN,
+      "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+      "preflightContinue": false,
+      "optionsSuccessStatus": 200
   })
 );
 
 app.use(express.json());
+app.get('/',(req,res)=>{
+  return res.status(200).send({ title: 'Waking Call..' });
+})
 app.use("/user", userRouter);
 app.use("/Oauth", oAuthRouter);
 app.use("/blogs", blogRouter);

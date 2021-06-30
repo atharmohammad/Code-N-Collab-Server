@@ -10,7 +10,10 @@ router.get("/Allblogs", async (req, res) => {
     // /Allblogs?sortBy=popularity&skip=5
     if (req.query.sortBy === "popularity") {
       sort = { LikesLength: "desc" };
-    } else {
+    }else if(req.query.sortBy === "oldest-first"){
+      sort = { createdAt: 1 };
+    } 
+    else {
       sort = { createdAt: "desc" };
     }
 
@@ -32,6 +35,9 @@ router.get("/Allblogs", async (req, res) => {
 
 router.post("/write", auth, async (req, res) => {
   try {
+    if(!req.body.Body || !req.body.Body.trim()){
+      throw new Error('Blog cant be empty!')
+    }
     const blog = new Blog({ Body: req.body.Body, User: req.user._id });
     const newBlog = await blog.save();
     const user = await User.findOne({ _id: req.user._id });
@@ -86,12 +92,16 @@ router.patch("/currBlog/:id", auth, async (req, res) => {
     const id = req.params.id;
     const blog = await Blog.findOne({ _id: id, Deleted: false });
     if (!blog) res.status(404).send();
-
+    
+    if(!req.body.Body || !req.body.Body.trim()){
+      throw new Error('Blog cant be empty!')
+    }
+    
     blog.Body = req.body.Body;
     await blog.save();
     res.status(200).send();
   } catch (e) {
-    res.status(400).send();
+    res.status(400).send(e);
   }
 });
 

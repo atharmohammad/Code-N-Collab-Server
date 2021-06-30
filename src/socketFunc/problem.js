@@ -2,45 +2,53 @@ const { getUser } = require("../utils/Users");
 const puppeteer = require("puppeteer");
 
 module.exports = function (io) {
-  io.on("connection", (socket) => {
-    socket.on("codeforces-problem", async (link) => {
-      let problem = "";
-      if (link == null || link == undefined) {
-        //console.log("link not defined");
-      } else if (link.includes("codeforces.com")) {
-        problem = await codeforces(link);
-      } else if (link.includes("codechef.com")) {
-        problem = await codechef(link);
-      } else if (link.includes("geeksforgeeks.org")) {
-        problem = await geeksforgeeks(link);
-      } else if (link.includes("atcoder.jp")) {
-        problem = await atcoder(link);
-      } else if (link.includes("cses.fi")) {
-        problem = await cses(link);
-      } else {
-        problem = "";
-      }
+  try {
+    io.on("connection", (socket) => {
+      socket.on("codeforces-problem", async (link) => {
+        try {
+          let problem = "";
+          if (link == null || link == undefined) {
+            //console.log("link not defined");
+          } else if (link.includes("codeforces.com")) {
+            problem = await codeforces(link);
+          } else if (link.includes("codechef.com")) {
+            problem = await codechef(link);
+          } else if (link.includes("geeksforgeeks.org")) {
+            problem = await geeksforgeeks(link);
+          } else if (link.includes("atcoder.jp")) {
+            problem = await atcoder(link);
+          } else if (link.includes("cses.fi")) {
+            problem = await cses(link);
+          } else {
+            problem = "";
+          }
 
-      const user = getUser(socket.id);
-      if (!user) {
-        return;
-      }
-      if (!problem) {
-        problem = `<div className='error'>
-        Please input correct url !<br/> Make sure Url is from following websites : geeksforgeeks , codeforces , codechef , atcoder,cses
+          const user = getUser(socket.id);
+          if (!user) {
+            return;
+          }
+          if (!problem) {
+            problem = `<div className='error'>
+        Please input correct url of the problem !<br/>And make sure Url is from following websites only: geeksforgeeks , codeforces , codechef , atcoder,cses
         </div>`;
-      }
-      io.to(user.room).emit("problem", problem);
+          }
+          io.to(user.room).emit("problem", problem);
+        } catch (e) {
+          console.log(e);
+        }
+      });
     });
-  });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 async function codeforces(URL) {
   try {
-    const browser = await puppeteer.launch({ headless: true ,args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-  ]});
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
     await page.goto(URL);
     const text = await page.evaluate(async function () {
@@ -57,10 +65,10 @@ async function codeforces(URL) {
 
 async function codechef(URL) {
   try {
-    const browser = await puppeteer.launch({ headless: true ,args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-  ]});
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
     await page.goto(URL);
     const text = await page.evaluate(function () {
@@ -78,10 +86,10 @@ async function codechef(URL) {
 
 async function geeksforgeeks(URL) {
   try {
-    const browser = await puppeteer.launch({ headless: true ,args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-  ]});
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
     await page.goto(URL);
     const text = await page.evaluate(function () {
@@ -98,10 +106,10 @@ async function geeksforgeeks(URL) {
 
 async function atcoder(URL) {
   try {
-    const browser = await puppeteer.launch({ headless: true ,args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-  ]});
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
     await page.goto(URL);
     const text = await page.evaluate(function () {
@@ -118,10 +126,10 @@ async function atcoder(URL) {
 
 async function cses(URL) {
   try {
-    const browser = await puppeteer.launch({ headless: true ,args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-  ]});
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
     await page.goto(URL);
     const text = await page.evaluate(function () {
