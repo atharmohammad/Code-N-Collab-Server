@@ -37,14 +37,14 @@
   </ol>
 </details>
 
-<a href="https://code-n-collab.netlify.app/" target="_blank"  rel="noreferrer" >
+<a href="https://code-n-collab.netlify.app/" target="_blank"  rel="noreferrer">
 <table >
    <tr>
      <td>
         <img src="Images/homepage.PNG"/>
      </td>
      <td >
-       <img src="Images/pofile.PNG"/>
+       <img src="Images/profile.PNG"/>
      </td>
    </tr>
    <tr>
@@ -57,6 +57,17 @@
    </tr>
 </table>
  </a>
+ 
+ <a href="https://code-n-collab.netlify.app/" target="_blank"  rel="noreferrer">
+      <table align="center">
+          <tr>
+               <td>
+                    <img src="https://media.giphy.com/media/JCoNZL6CTqYyDEhb4T/giphy.gif" alt="Collaboration" height="200"/>
+               </td>
+          </tr>
+     </table>
+</a>
+ 
 
 # 🔖 About 
 Code-N-Collab server is backend for Code-N-Collab , It make Code-N-Collab real-time collaborative using sockets and also serves as backend for blogs
