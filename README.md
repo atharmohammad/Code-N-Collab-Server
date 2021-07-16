@@ -105,15 +105,7 @@ It provides users with :-
 - get the <MONGO_DB_URL> from your cluster , you have to use it in env vars
 
 #### Setup Environment variables 
-Go to /src/Function/getKey.js and remove 3 lines as below from the keys array 
-
-``` 
-  [process.env.COMPILE_CLIENT_ID2, process.env.COMPILE_CLIENT_SECRET2],
-  [process.env.COMPILE_CLIENT_ID3, process.env.COMPILE_CLIENT_SECRET3],
-  [process.env.COMPILE_CLIENT_ID4, process.env.COMPILE_CLIENT_SECRET4],
-```
-
-- now you can declare your env vars using dotenv like below :
+- you can declare your env vars using dotenv like below :
 
 ```
      CORS_ORIGIN=http://localhost:3000/
@@ -124,6 +116,12 @@ Go to /src/Function/getKey.js and remove 3 lines as below from the keys array
      MONGO_DB_URL=<YOUR_MONGO_DB_URL>
      COMPILE_CLIENT_ID1=<COMPILE_CLIENT_ID1>
      COMPILE_CLIENT_SECRET1=<COMPILER_CLIENT_SECRET1>
+     COMPILE_CLIENT_ID2=<COMPILE_CLIENT_ID1>
+     COMPILE_CLIENT_SECRET2=<COMPILER_CLIENT_SECRET1>
+     COMPILE_CLIENT_ID3=<COMPILE_CLIENT_ID1>
+     COMPILE_CLIENT_SECRET3=<COMPILER_CLIENT_SECRET1>
+     COMPILE_CLIENT_ID4=<COMPILE_CLIENT_ID1>
+     COMPILE_CLIENT_SECRET4=<COMPILER_CLIENT_SECRET1>
 
 ```
 - or you can declare your env vars in nodemon.json if you are using nodemon for development like below:
@@ -135,9 +133,15 @@ Go to /src/Function/getKey.js and remove 3 lines as below from the keys array
         "GOOGLE_CLIENT_SECRET": "<YOUR_GOOGLE_CLIENT_SECRET>",
         "redirect_URI" : "http://localhost:3000/homepage/",
         "BaseURI":"http://localhost:8080/",
-        "MONGO_DB_URL":"<YOUR_MONGO_DB_URL>"
-        "COMPILE_CLIENT_ID1":"<COMPILE_CLIENT_ID1>"
-        "COMPILE_CLIENT_SECRET1":"<COMPILER_CLIENT_SECRET1>"
+        "MONGO_DB_URL":"<YOUR_MONGO_DB_URL>",
+        "COMPILE_CLIENT_ID1":"<COMPILE_CLIENT_ID1>",
+        "COMPILE_CLIENT_SECRET1":"<COMPILER_CLIENT_SECRET1>",
+        "COMPILE_CLIENT_ID2":"<COMPILE_CLIENT_ID1>",
+        "COMPILE_CLIENT_SECRET2":"<COMPILER_CLIENT_SECRET1>",
+        "COMPILE_CLIENT_ID3":"<COMPILE_CLIENT_ID1>",
+        "COMPILE_CLIENT_SECRET3":"<COMPILER_CLIENT_SECRET1>",
+        "COMPILE_CLIENT_ID4":"<COMPILE_CLIENT_ID1>",
+        "COMPILE_CLIENT_SECRET4":"<COMPILER_CLIENT_SECRET1>"
       }
 }
 
