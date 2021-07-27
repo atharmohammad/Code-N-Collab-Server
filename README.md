@@ -116,7 +116,7 @@ Go to /src/Function/getKey.js and remove 3 lines as below from the keys array
 - now you can declare your env vars using dotenv like below :
 
 ```
-     CORS_ORIGIN=http://localhost:3000/
+     CORS_ORIGIN=*
      GOOGLE_CLIENT_ID=<YOUR_GOOGLE_CLIENT_ID>
      GOOGLE_CLIENT_SECRET=<YOUR_GOOGLE_CLIENT_SECRET>
      redirect_URI=http://localhost:3000/homepage/
@@ -130,7 +130,7 @@ Go to /src/Function/getKey.js and remove 3 lines as below from the keys array
 ```
 {
     "env":{
-        "CORS_ORIGIN":"http://localhost:3000/",
+        "CORS_ORIGIN":"*",
         "GOOGLE_CLIENT_ID": "<YOUR_GOOGLE_CLIENT_ID>",
         "GOOGLE_CLIENT_SECRET": "<YOUR_GOOGLE_CLIENT_SECRET>",
         "redirect_URI" : "http://localhost:3000/homepage/",
