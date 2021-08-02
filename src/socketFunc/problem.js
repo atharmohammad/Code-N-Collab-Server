@@ -31,7 +31,7 @@ module.exports = function (io) {
           }
           if (!problem) {
             problem = `<div className='error'>
-        Please input correct url of the problem !<br/>And make sure Url is from following websites only: geeksforgeeks , codeforces , codechef , atcoder,cses
+        Please input correct url of the problem !<br/>And make sure Url is from following websites only: geeksforgeeks , codeforces , codechef , atcoder,cses, codeDrills
         </div>`;
           }
           io.to(user.room).emit("problem", problem);
