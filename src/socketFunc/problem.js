@@ -155,7 +155,7 @@ async function codeDrill(URL) {
     });
     const page = await browser.newPage();
     await page.goto(URL);
-    await page.waitForTimeout(8000);
+    await page.waitForTimeout(5000);
     // await await page.waitForSelector('.py-5', {
     //   visible: true,
     // });
