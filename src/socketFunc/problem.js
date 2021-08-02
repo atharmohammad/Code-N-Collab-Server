@@ -19,6 +19,8 @@ module.exports = function (io) {
             problem = await atcoder(link);
           } else if (link.includes("cses.fi")) {
             problem = await cses(link);
+          } else if (link.includes("codedrills.io")) {
+            problem = await codeDrill(link);
           } else {
             problem = "";
           }
@@ -29,7 +31,7 @@ module.exports = function (io) {
           }
           if (!problem) {
             problem = `<div className='error'>
-        Please input correct url of the problem !<br/>And make sure Url is from following websites only: geeksforgeeks , codeforces , codechef , atcoder,cses
+        Please input correct url of the problem !<br/>And make sure Url is from following websites only: geeksforgeeks , codeforces , codechef , atcoder,cses, codeDrills
         </div>`;
           }
           io.to(user.room).emit("problem", problem);
@@ -143,4 +145,27 @@ async function cses(URL) {
   } catch (e) {
     return null;
   }
+}
+
+async function codeDrill(URL) {
+  try {
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+    const page = await browser.newPage();
+    await page.goto(URL);
+    await page.waitForTimeout(5000);
+    // await await page.waitForSelector('.py-5', {
+    //   visible: true,
+    // });
+    const text = await page.evaluate(function () {
+      return document.querySelector(".py-5").outerHTML;
+    });
+    await browser.close();
+
+    return text;
+  } catch (e) {console.log(e)}
+
+  return "Error: Try again :( ";
 }

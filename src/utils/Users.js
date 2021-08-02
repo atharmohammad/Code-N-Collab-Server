@@ -28,7 +28,7 @@ const addUser = ({ id, username, room, password }) => {
 
   if (roomPassword) {
     if (roomPassword.password !== password)
-      return { error: "Password did not matched" };
+      return { error: "Password did not match !" };
   } else {
     const p = { room, password };
     passwordList.push(p);

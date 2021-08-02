@@ -108,7 +108,7 @@ It provides users with :-
 - you can declare your env vars using dotenv like below :
 
 ```
-     CORS_ORIGIN=http://localhost:3000/
+     CORS_ORIGIN=*
      GOOGLE_CLIENT_ID=<YOUR_GOOGLE_CLIENT_ID>
      GOOGLE_CLIENT_SECRET=<YOUR_GOOGLE_CLIENT_SECRET>
      redirect_URI=http://localhost:3000/homepage/
@@ -128,7 +128,7 @@ It provides users with :-
 ```
 {
     "env":{
-        "CORS_ORIGIN":"http://localhost:3000/",
+        "CORS_ORIGIN":"*",
         "GOOGLE_CLIENT_ID": "<YOUR_GOOGLE_CLIENT_ID>",
         "GOOGLE_CLIENT_SECRET": "<YOUR_GOOGLE_CLIENT_SECRET>",
         "redirect_URI" : "http://localhost:3000/homepage/",
