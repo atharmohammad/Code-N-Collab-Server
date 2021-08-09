@@ -1,7 +1,9 @@
 <p align="center">
+<a href="https://code-n-collab.netlify.app/" target="_blank"  rel="noreferrer">
 <img src="https://user-images.githubusercontent.com/56029409/120935296-af116b00-c71f-11eb-8a47-9ca6a54832db.png" height="90"
      style="border-radius:50%"/>
 <img src="https://user-images.githubusercontent.com/56029409/120934611-a10e1b00-c71c-11eb-8f9a-c22ecfc82652.png" height="70">
+</a>
 </p>
 <br/>
 
@@ -71,6 +73,9 @@
 
 # 🔖 About 
 Code-N-Collab server is backend for Code-N-Collab , It make Code-N-Collab real-time collaborative using sockets and also serves as backend for blogs
+
+### Website
+[Code-N-Collab](https://code-n-collab.netlify.app/)
 
 ## 🚀 Features
 It provides users with :-
