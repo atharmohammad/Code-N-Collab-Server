@@ -79,14 +79,11 @@ Code-N-Collab server is backend for Code-N-Collab , It make Code-N-Collab real-t
 
 ## 🚀 Features
 It provides users with :-
-- Real-time code editor :
-  to share your code and discuss about it with your collegues or solves a competitive coding problem and discuss it , you can also fetch CP problems from popular websites such as codeforces , codechef , atcoder , Cses , geeksforgeeks , etc. It also has a chat section for people to talk about the problem
+- Real-time code editor : Users can collaborate with their team on issues and solve CP problems using a real-time code-editor(like Google Docs) 
 
-- Lockout Championship :
-  for people who are looking to compete on codeforces problemset , they can set their codeforces handle in profile section and enjoy competing with their friends and challenging on interesting problems which will be filter on user's choice and then randomly selects 5 problems in a problem rating range , To challenge your friend you just need to share your Url before starting the contest
-  
-- Blogs : 
-  People can share their knowledge , learn and ask any thing in our blogs section 
+- Lockout Championship : For Cp lovers, they can compete in a lockout championships with their friends to and challenge your friends for championship,filter problems with preferred difficulty and improve you CP skills
+
+- Blogs : To find new people and share your knowledge , platform provides users blogs to write learn and share
 
 ## 🔥 Getting Started 
 
