@@ -11,8 +11,10 @@ const commentRouter = require("./routers/CommentRouter");
 const oAuthRouter = require("./routers/OauthRouter");
 //const KEY = require("../config");
 const app = express();
+//Initialising the server instance
 const server = http.createServer(app);
 
+//Applying the middlewares
 app.use(
   cors({
       "origin": process.env.CORS_ORIGIN,
@@ -23,6 +25,7 @@ app.use(
 );
 
 app.use(express.json());
+//Server waking route
 app.get('/',(req,res)=>{
   return res.status(200).send({ title: 'Waking Call..' });
 })
@@ -32,6 +35,7 @@ app.use("/blogs", blogRouter);
 app.use("/reply", replyRouter);
 app.use("/comment", commentRouter);
  
+//Initialising a socketio instance
 const io = socketIo(server, {
   cors: {
     origin: "*",

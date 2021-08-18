@@ -7,7 +7,7 @@ module.exports = function (io) {
       socket.on("Compile_ON", ({ language, code, input, reason }) => {
         try {
           const sids = io.of("/").adapter.sids;
-          const room = [...sids.get(socket.id)][1];
+          const room = [...sids.get(socket.id)][1]; //Get all t
 
           if (!room) {
             return;

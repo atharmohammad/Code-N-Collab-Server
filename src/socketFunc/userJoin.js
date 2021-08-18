@@ -76,11 +76,11 @@ module.exports = function (io) {
           console.log(e);
         }
       });
-
+      //real-time updates on the change in IO 
       socket.on("changeIO", (data) => {
         try {
           if (data.reason === "code-editor") {
-            const sids = io.of("/").adapter.sids;
+            const sids = io.of("/").adapter.sids; //sids gives map of every user socketid to its room
             const room = [...sids.get(socket.id)][1];
             if (!room) return;
             socket.broadcast.to(room).emit("IO_recieved", data);
@@ -89,10 +89,9 @@ module.exports = function (io) {
           console.log(e);
         }
       });
-
+      //Disconnecting the user and updating , notifying other people in the room about the user
       socket.on("disconnect", () => {
         try {
-          //Deleting the model when everyone leaves the room
           const user = removeUser(socket.id);
 
           if (!user) return;

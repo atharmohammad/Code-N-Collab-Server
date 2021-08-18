@@ -1,7 +1,9 @@
 const axios = require("axios");
 
-let contests = []; //contains all contests
+//Storing all the contest data
+let contests = []; 
 
+//checking the contest existence and its validation
 const checkContest = (roomId, name, socketid) => {
   try{
     const contest = contests.find((con, index) => con.Id === roomId);
@@ -35,14 +37,17 @@ const checkContest = (roomId, name, socketid) => {
   }
 };
 
+//Creating a contest
 const createContest = (roomId, name, socketid) => {
   try{
+    //initialising the User object 
     const user = {
       Name: name,
       Score: 0,
       SocketId: socketid,
     };
 
+    //initialising the contest object
     const lockout = {
       Id: roomId,
       Users: [user],
@@ -56,6 +61,8 @@ const createContest = (roomId, name, socketid) => {
       StartTime: new Date().getTime(),
       userToProblem: new Map(),
     };
+
+    //Inserting the contest in the array
     contests.push(lockout);
     console.log("contest-created!");
     return { error: null, contest: lockout };
@@ -68,25 +75,31 @@ const createContest = (roomId, name, socketid) => {
 
 };
 
+//If contest already exist and user is valid then join the contest
 const joinContest = (roomId, name, socketid, co) => {
   try{
+    //Finding the user , contest with in the array
     const contest = contests.find((con, index) => con.Id === roomId);
     const user = contest.Users.find((user, i) => user.Name === name);
     const userId = contest.UsersId.find((user, i) => user === name);
 
+    //If no contest exist return
     if (!contest) {
       return;
     }
 
+    //If both user and userId is available means the user hadn't exit the contest
     if (user && userId) {
       user.SocketId = socketid;
       return { error: null, contest: contest };
     } else if (user) {
+      //If user joins the contest again after exiting
       user.SocketId = socketid;
       contest.UsersId.push(name);
       return { error: null, contest: contest };
     }
 
+    //If new user joined the contest before starting
     const newUser = {
       Name: name,
       Score: 0,
@@ -107,29 +120,32 @@ const joinContest = (roomId, name, socketid, co) => {
   }
 };
 
+//Removing the contest user on its exit
+
   const removeContestUser = ({ roomId, name }) => {
-    try{
+    //Finding the contest 
+    try {
       const contest = contests.find((con, index) => con.Id === roomId);
 
       if (!contest) {
         return;
       }
 
+      //Filtering the userId for removal , user name will remain to show on leaderboard
       const UserIds = contest.UsersId;
       const users = UserIds.filter((id, i) => id !== name);
       contest.UsersId = users;
       console.log(contest, "removed user");
       return contest;
-
-    }catch(e){
+    } catch (e) {
       return {
         error: "There might be an error! Please Try again !",
         contest: null,
       };
     }
+  };
 
-};
-
+  //starting the contest and fetching problems
 const startContest = ({
   room,
   problemTags,
@@ -150,6 +166,7 @@ const startContest = ({
       maxDuration = 30;
     }
 
+    //Selecting the problems after filtering
     problemArray.every((problem, i) => {
       if (
         problem.rating >= parseInt(minRating) &&
@@ -197,6 +214,7 @@ const startContest = ({
 
 };
 
+//To return a list of team members in a contest
 const getTeamMembers = (userIds) => {
   try{
     const newId = [];
@@ -213,6 +231,7 @@ const getTeamMembers = (userIds) => {
 
 };
 
+//Creating the url to fetch problems with certaing filtering
 const createURL = (problemTags) => {
   try{
     const tags = problemTags.join(";");
@@ -227,6 +246,7 @@ const createURL = (problemTags) => {
 
 };
 
+//Updating the leaderboard and problems in the contest
 const updateContest = async (roomId) => {
   try{
     const contest = contests.find((con, index) => con.Id === roomId);
@@ -244,6 +264,7 @@ const updateContest = async (roomId) => {
 
     console.log(unsolvedProblems);
 
+    //Checking the problems solved by each user
     const promise = await contest.UsersId.map(async (user, i) => {
       const URL = `https://codeforces.com/api/user.status?handle=${user}&from=1&count=10`;
       try {
@@ -257,6 +278,8 @@ const updateContest = async (roomId) => {
       }
       return;
     });
+
+    //awaiting all the promises to return
     try {
       await Promise.all(promise);
       updateScores(roomId);
@@ -272,6 +295,7 @@ const updateContest = async (roomId) => {
   }
 };
 
+//Validation and checking the problem solving before updating
 const checkIfProblemSolved = (user, unsolvedProblem, roomId, arr) => {
   try{
     const contest = contests.find((con, index) => con.Id === roomId);
@@ -312,6 +336,7 @@ const checkIfProblemSolved = (user, unsolvedProblem, roomId, arr) => {
 
 };
 
+//Updating the scores for the leader board
 const updateScores = (roomId) => {
   try{
     const contest = contests.find((con, index) => con.Id === roomId);
@@ -353,6 +378,7 @@ const updateScores = (roomId) => {
 
 };
 
+//Checking the time when the problem was solved
 const check = (contest, unsolvedProblem, prob) => {
 
   try{
@@ -374,6 +400,7 @@ const check = (contest, unsolvedProblem, prob) => {
 
 };
 
+//Shuffling the problems array to pick random problems
 function shuffle(array) {
   for (var i = array.length - 1; i > 0; i--) {
     var j = Math.floor(Math.random() * (i + 1));
@@ -383,6 +410,7 @@ function shuffle(array) {
   }
 }
 
+//Return the contest with specific roomId
 const getContest = (roomId) => {
   return contests.find((con, index) => con.Id === roomId);
 };
@@ -391,6 +419,8 @@ const getContestLength = () => {
   return contests.length;
 };
 
+
+//Removes the contest if exceeds the 24hrs of time
 const deleteContests = () => {
   const curr_time = new Date().getTime();
   const deleteBeforeTime = curr_time - 24 * 60 * 60 * 1000;
