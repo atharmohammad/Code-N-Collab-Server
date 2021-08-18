@@ -1,6 +1,7 @@
 const { getUser } = require("../utils/Users");
 const puppeteer = require("puppeteer");
 
+//Site parameters 
 const params = {
   codeforces: {
     querySelector: `#pageContent > div.problemindexholder > div.ttypography`,
@@ -69,7 +70,7 @@ module.exports = function (io) {
     console.log(e);
   }
 };
-
+//Scrapping the problem from the selector after loading the page
 async function chromiumFetch(site, URL) {
   try {
     const browser = await puppeteer.launch({

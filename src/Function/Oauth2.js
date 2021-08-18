@@ -1,11 +1,13 @@
 const axios = require("axios");
 
 function getAuthUrl() {
+  //defining the access scopes for google oauth
   const scopes = [
     "https://www.googleapis.com/auth/userinfo.profile",
     "https://www.googleapis.com/auth/userinfo.email",
   ];
 
+  //Generating the authentication url
   return oauth2Client.generateAuthUrl({
     access_type: "offline",
     prompt: "consent",
@@ -13,6 +15,7 @@ function getAuthUrl() {
   });
 }
 
+//Fetching the google user using the token from the authentication url
 async function getGoogleUser(token) {
   try {
     const googleUser = await axios.get(
