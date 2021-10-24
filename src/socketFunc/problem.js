@@ -5,7 +5,7 @@ const puppeteer = require("puppeteer");
 const params = {
   codeforces: {
     querySelector: `#pageContent > div.problemindexholder > div.ttypography`,
-    wait: 0,
+    wait:  0,
   },
   codechef: {
     querySelector:
